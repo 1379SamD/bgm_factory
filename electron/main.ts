@@ -1,68 +1,75 @@
-import { app, BrowserWindow } from 'electron'
-import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
+// electron/main.ts（全部これに置き換え）
+import { app, BrowserWindow, ipcMain } from "electron";
+import path from "path";
+import fs from "fs/promises";
+import { parseFile } from "music-metadata";
+import { fileURLToPath } from "url";
 
-const require = createRequire(import.meta.url)
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
-process.env.APP_ROOT = path.join(__dirname, '..')
-
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
-export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
-export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
-export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
-
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
-
-let win: BrowserWindow | null
+let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
-  win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+  // ★ main.ts(ビルド後は dist-electron/main-xxxx.js) と同じフォルダにある preload.mjs を参照
+  const preloadPath = fileURLToPath(new URL("./preload.mjs", import.meta.url));
+  console.log("[preload use]", preloadPath);
+
+  mainWindow = new BrowserWindow({
+    width: 1100,
+    height: 760,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
+      preload: preloadPath,
+      contextIsolation: true,
+      nodeIntegration: false,
     },
-  })
+  });
 
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
+  // dev: Vite
+  mainWindow.loadURL("http://localhost:5173");
 
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
-  } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
-  }
+  // デバッグ用（外したければ消してOK）
+  mainWindow.webContents.openDevTools({ mode: "detach" });
 }
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-    win = null
-  }
-})
+app
+  .whenReady()
+  .then(createWindow)
+  .catch((e) => {
+    console.error("[whenReady error]", e);
+    app.quit();
+  });
 
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
+});
 
-app.whenReady().then(createWindow)
+// -------- IPC: 固定フォルダ D:\sunoai_bgm から mp3 + duration を返す --------
+ipcMain.handle("load-fixed-mp3", async () => {
+  const folder = "D:\\sunoai_bgm";
+
+  try {
+    const entries = await fs.readdir(folder);
+
+    const mp3Names = entries
+      .filter((name) => name.toLowerCase().endsWith(".mp3"))
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+    const files = await Promise.all(
+      mp3Names.map(async (name) => {
+        const fullPath = path.join(folder, name);
+
+        let durationSec = 0;
+        try {
+          const meta = await parseFile(fullPath);
+          durationSec = Math.max(0, Math.floor(meta.format.duration ?? 0));
+        } catch {
+          durationSec = 0;
+        }
+
+        return { id: name, name, durationSec };
+      })
+    );
+
+    return { ok: true, folder, files };
+  } catch (e: any) {
+    return { ok: false, error: e?.message ?? "Unknown error", folder, files: [] };
+  }
+});

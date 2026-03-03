@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 
 type Track = {
   id: string
@@ -6,18 +6,18 @@ type Track = {
   durationSec: number
 }
 
-const dummyTracks: Track[] = [
-  { id: 't01', name: '001.mp3', durationSec: 192 },
-  { id: 't02', name: '002.mp3', durationSec: 178 },
-  { id: 't03', name: '003.mp3', durationSec: 225 },
-  { id: 't04', name: '004.mp3', durationSec: 171 },
-  { id: 't05', name: '005.mp3', durationSec: 241 },
-  { id: 't06', name: '006.mp3', durationSec: 199 },
-  { id: 't07', name: '007.mp3', durationSec: 187 },
-  { id: 't08', name: '008.mp3', durationSec: 203 },
-  { id: 't09', name: '009.mp3', durationSec: 214 },
-  { id: 't10', name: '010.mp3', durationSec: 190 },
-]
+// const dummyTracks: Track[] = [
+//   { id: 't01', name: '001.mp3', durationSec: 192 },
+//   { id: 't02', name: '002.mp3', durationSec: 178 },
+//   { id: 't03', name: '003.mp3', durationSec: 225 },
+//   { id: 't04', name: '004.mp3', durationSec: 171 },
+//   { id: 't05', name: '005.mp3', durationSec: 241 },
+//   { id: 't06', name: '006.mp3', durationSec: 199 },
+//   { id: 't07', name: '007.mp3', durationSec: 187 },
+//   { id: 't08', name: '008.mp3', durationSec: 203 },
+//   { id: 't09', name: '009.mp3', durationSec: 214 },
+//   { id: 't10', name: '010.mp3', durationSec: 190 },
+// ]
 
 function formatMMSS(totalSec: number) {
   const m = Math.floor(totalSec / 60)
@@ -34,7 +34,7 @@ function formatHHMMSS(totalSec: number) {
 
 export default function App() {
   // tracks は今はダミー。次にIPCで差し替える
-  const [tracks] = useState<Track[]>(dummyTracks)
+  const [tracks, setTracks] = useState<Track[]>([])
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
@@ -42,6 +42,32 @@ export default function App() {
   const [descJp, setDescJp] = useState('')
   const [descEn, setDescEn] = useState('')
   const [hashtags, setHashtags] = useState('')
+
+  useEffect(() => {
+  const load = async () => {
+    try {
+      console.log("window.api", (window as any).api);
+
+    if (!window.api?.loadFixedMp3) {
+      console.error("window.api is undefined (preload not loaded)");
+    return;
+}
+      const res = await window.api.loadFixedMp3();
+      console.log("loadFixedMp3 res:", res);
+
+      if (res.ok) {
+        setTracks(res.files);
+      } else {
+        console.error(res.error);
+        alert(`MP3読み込み失敗: ${res.error ?? "unknown"}`);
+      }
+    } catch (e) {
+      console.error("loadFixedMp3 threw:", e);
+      alert(`例外: ${String(e)}`);
+    }
+  };
+  load();
+  }, []);
 
   const selectedTracks = useMemo(
     () => tracks.filter((t) => selectedIds.has(t.id)),
@@ -119,7 +145,7 @@ export default function App() {
         {/* Left */}
         <section style={styles.card}>
           <div style={styles.cardTitle}>IMPORT</div>
-          <div style={styles.cardSub}>今日のDL（ダミー10曲）</div>
+          <div style={styles.cardSub}>sunoai BGM</div>
 
           <div style={styles.list}>
             {tracks.map((t) => (

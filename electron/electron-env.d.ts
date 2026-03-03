@@ -25,3 +25,18 @@ declare namespace NodeJS {
 interface Window {
   ipcRenderer: import('electron').IpcRenderer
 }
+
+export {}
+
+declare global {
+  interface Window {
+    api: {
+      loadFixedMp3: () => Promise<{
+        ok: boolean
+        error?: string
+        folder: string
+        files: { id: string; name: string; durationSec: number; fullPath: string }[]
+      }>
+    }
+  }
+}
