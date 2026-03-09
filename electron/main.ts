@@ -15,6 +15,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1100,
     height: 760,
+    resizable: false,
     webPreferences: {
       preload: preloadPath,
       contextIsolation: true,
