@@ -1,12 +1,6 @@
 import styles from "./App.module.css";
 import type {Track} from "./App.tsx";
 
-// type Track = {
-//   id: string
-//   name: string
-//   durationSec: number
-// }
-
 type Props = {
   tracks: Track[]
   selectedIds: Set<string>
@@ -19,7 +13,7 @@ type Props = {
 export default function Left({tracks, selectedIds, toggle, formatMMSS, selectAll, clearAll}: Props) {
   return (
     <section className={styles.card}>
-      <div className={styles.cardTitle}>IMPORT</div>
+      <div className={styles.cardTitle}>TRACKS</div>
       <div className={styles.cardSub}>sunoai BGM</div>
 
       <div className={styles.list}>

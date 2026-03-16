@@ -1,5 +1,5 @@
 // electron/main.ts（全部これに置き換え）
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, dialog  } from "electron";
 import path from "path";
 import fs from "fs/promises";
 import { parseFile } from "music-metadata";
@@ -13,8 +13,8 @@ function createWindow() {
   console.log("[preload use]", preloadPath);
 
   mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 760,
+    width: 960,
+    height: 1080,
     resizable: false,
     webPreferences: {
       preload: preloadPath,
@@ -73,4 +73,31 @@ ipcMain.handle("load-fixed-mp3", async () => {
   } catch (e: any) {
     return { ok: false, error: e?.message ?? "Unknown error", folder, files: [] };
   }
+});
+
+ipcMain.handle("pick-image", async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ["openFile"],
+    filters: [
+      { name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] },
+    ],
+  });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+
+  const filePath = result.filePaths[0];
+  const ext = path.extname(filePath).toLowerCase();
+
+  let mime = "image/png";
+  if (ext === ".jpg" || ext === ".jpeg") mime = "image/jpeg";
+  if (ext === ".webp") mime = "image/webp";
+
+  const buffer = await fs.readFile(filePath);
+
+  return {
+    path: filePath,
+    previewUrl: `data:${mime};base64,${buffer.toString("base64")}`,
+  };
 });

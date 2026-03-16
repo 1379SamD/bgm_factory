@@ -22,9 +22,13 @@ declare namespace NodeJS {
 }
 
 // Used in Renderer process, expose in `preload.ts`
-interface Window {
-  ipcRenderer: import('electron').IpcRenderer
-}
+// interface Window {
+//   ipcRenderer: import('electron').IpcRenderer
+//   api: {
+//     loadFixedMp3: () => Promise<any>;
+
+//   };
+// }
 
 export {}
 
@@ -37,6 +41,10 @@ declare global {
         folder: string
         files: { id: string; name: string; durationSec: number; fullPath: string }[]
       }>
+      pickImage: () => Promise<{
+        path: string;
+        previewUrl: string;
+      } | null>;
     }
   }
 }

@@ -1,15 +1,20 @@
 .app {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  /* width: 100%; */
   background: #0f1115;
   color: #edeff4;
   padding: 16px;
   box-sizing: border-box;
-  font-family:
-    system-ui,
-    -apple-system,
-    segoe ui,
-    roboto,
-    sans-serif;
+  font-family: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+}
+.columns {
+  display: grid;
+  grid-template-columns: 250px 250px 364px;
+  gap: 16px;
+  align-items: start;
+  width: 100%;
+  min-width: 0px;
 }
 .header {
   display: flex;
@@ -42,26 +47,30 @@
   background: rgba(245, 178, 122, 0.18);
   border: 1px solid rgba(245, 178, 122, 0.28);
 }
-.columns {
-  display: grid;
-  grid-template-columns: 320px 1fr 320px;
-  gap: 16px;
-  align-items: start;
-}
 .card {
-  border-radius: 16px;
+  border-radius: 5px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 100%;
 }
 .cardWide {
-  border-radius: 16px;
+  border-radius: 5px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   min-height: 520px;
+  height: 100%;
+  box-sizing: border-box;
 }
 .cardTitle {
   font-size: 12px;
@@ -79,7 +88,8 @@
   display: flex;
   flex-direction: column;
   gap: 0px;
-  max-height: 600px;
+  flex: 1;
+  max-height: 740px;
   overflow: auto;
   font-size: 12px;
 }
@@ -99,10 +109,11 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
   transition: background 0.15s ease;
+  /* width: 100%; */
 }
 .row:hover {
   background: rgba(255, 255, 255, 0.05);
-} 
+}
 .muted {
   color: #9aa6bd;
   font-size: 12px;
@@ -110,25 +121,26 @@
 .actions {
   display: flex;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 10px;
+  font-size: 12px;
 }
 .actionsCol {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 26px;
 }
 .btn {
-  border-radius: 12px;
-  padding: 10px 12px;
+  border-radius: 5px;
+  padding: 2px 10px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #edeff4;
   cursor: pointer;
 }
-.btn-ghost {
-  border-radius: 12px;
-  padding: 10px 12px;
+.btnGhost {
+  border-radius: 5px;
+  padding: 5px 10px;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: #edeff4;
@@ -144,22 +156,26 @@
   font-weight: 700;
 }
 .buildBox {
-  border-radius: 16px;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  min-height: 320px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
+  overflow: auto;
+  font-size: 12px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-top: 10px;
+  height: 290px;
+  overflow: auto;
 }
 .buildRow {
   display: flex;
   gap: 10px;
   padding: 8px 10px;
-  border-radius: 12px;
+  border-radius: 5px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
 }
 .total-line {
   margin-top: 12px;
@@ -185,26 +201,66 @@
   flex-direction: column;
   gap: 6px;
   margin-top: 10px;
+  /* align-items: center; */
 }
 .label {
   font-size: 12px;
   color: #a8b0c0;
 }
 .input {
-  border-radius: 12px;
+  border-radius: 5px;
   padding: 10px 12px;
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #edeff4;
   outline: none;
+  /* height: 50px; */
+}
+.hashtagsInput {
+  border-radius: 5px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #edeff4;
+  outline: none;
+  height: 50px;
 }
 .textarea {
-  border-radius: 12px;
+  border-radius: 5px;
   padding: 10px 12px;
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #edeff4;
   outline: none;
-  min-height: 92px;
+  min-height: 170px;
   resize: vertical;
+}
+.totalLine {
+  margin-top: 10px;
+}
+.roopCounter {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.roopSelectNum {
+  display: flex;
+  gap: 10px;
+}
+.thumbnailPic {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.pathText {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #a8b0c0;
+  word-break: break-all;
+}
+.previewImage {
+  margin-top: 8px;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }

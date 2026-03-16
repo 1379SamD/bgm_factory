@@ -17,7 +17,7 @@ export default function Right({ title, setTitle, descJp, setDescJp, descEn, setD
   return (
     <section className={styles.card}>
       <div className={styles.cardTitle}>METADATA</div>
-      <div className={styles.cardSub}>投稿用メタ（先に保存しておく）</div>
+      {/* <div className={styles.cardSub}>投稿用メタ（先に保存しておく）</div> */}
 
       <div className={styles.field}>
         <div className={styles.label}>Title</div>
@@ -48,8 +48,8 @@ export default function Right({ title, setTitle, descJp, setDescJp, descEn, setD
 
       <div className={styles.field}>
         <div className={styles.label}>Hashtags</div>
-        <input
-          className={styles.input}
+        <textarea
+          className={styles.hashtagsInput}
           placeholder="#SleepMusic #作業用BGM ..."
           value={hashtags}
           onChange={(e) => setHashtags(e.target.value)}
@@ -58,28 +58,28 @@ export default function Right({ title, setTitle, descJp, setDescJp, descEn, setD
 
       <div className={styles.actionsCol}>
         <button className={styles.btnPrimary} onClick={saveMetaToLocal}>
-          JSON保存（今はlocalStorage）
+          JSON保存
         </button>
         <button
           className={styles.btn}
           onClick={() => copy(title)}
           disabled={!title}
         >
-          タイトルコピー
+          Title Copy
         </button>
         <button
           className={styles.btn}
           onClick={() => copy(descJp + "\n\n" + descEn)}
           disabled={!descJp && !descEn}
         >
-          説明コピー（JP+EN）
+          Description Copy（JP+EN）
         </button>
         <button
           className={styles.btn}
           onClick={() => copy(hashtags)}
           disabled={!hashtags}
         >
-          タグコピー
+          Hashtags Copy
         </button>
       </div>
     </section>
