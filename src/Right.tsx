@@ -1,4 +1,5 @@
 import styles from "./App.module.css";
+import { useState } from "react";
 
 type Props = {
   title: string;
@@ -9,15 +10,75 @@ type Props = {
   setDescEn: React.Dispatch<React.SetStateAction<string>>;
   hashtags: string;
   setHashtags: React.Dispatch<React.SetStateAction<string>>;
-  saveMetaToLocal: () => void
-  copy: (text: string) => Promise<void>
+  saveMetaToLocal: () => void;
+  copy: (text: string) => Promise<void>;
+  setDate: React.Dispatch<React.SetStateAction<string>>;
+  date: string;
+  setPublishTime: React.Dispatch<React.SetStateAction<string>>;
+  publishTime: string;
 };
 
-export default function Right({ title, setTitle, descJp, setDescJp, descEn, setDescEn, hashtags, setHashtags, saveMetaToLocal, copy}: Props) {
+export default function Right({
+  title,
+  setTitle,
+  descJp,
+  setDescJp,
+  descEn,
+  setDescEn,
+  hashtags,
+  setHashtags,
+  saveMetaToLocal,
+  copy,
+  setDate,
+  date,
+  setPublishTime,
+  publishTime,
+}: Props) {
+  // const [publishTime, setPublishTime] = useState("22:00");
+
+  const metaDataCheck = (): boolean => {
+    if (title === "" || descJp === "" || descEn === "" || hashtags === "") {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   return (
-    <section className={styles.card}>
-      <div className={styles.cardTitle}>METADATA</div>
-      {/* <div className={styles.cardSub}>投稿用メタ（先に保存しておく）</div> */}
+    <section className={styles.rightCard}>
+      <div className={styles.rightTitle}>
+        <div className={styles.cardTitle}>METADATA</div>
+        <span
+          className={`${styles.badge} ${metaDataCheck() ? styles.badgeOk : styles.badgeNg}`}
+        >
+          {metaDataCheck() ? "Ready" : "Need more"}
+        </span>
+      </div>
+      <div className={styles.field}>
+        <div className={styles.label}>Post Date</div>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        <select
+          id="publishTime"
+          value={publishTime}
+          onChange={(e) => setPublishTime(e.target.value)}
+          className={styles.select}
+        >
+          <option value="07:00">07:00</option>
+          <option value="08:00">08:00</option>
+          <option value="09:00">09:00</option>
+          <option value="10:00">10:00</option>
+          <option value="12:00">12:00</option>
+          <option value="18:00">18:00</option>
+          <option value="19:00">19:00</option>
+          <option value="20:00">20:00</option>
+          <option value="21:00">21:00</option>
+          <option value="22:00">22:00</option>
+        </select>
+      </div>
 
       <div className={styles.field}>
         <div className={styles.label}>Title</div>

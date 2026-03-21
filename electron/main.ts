@@ -1,5 +1,5 @@
 // electron/main.ts（全部これに置き換え）
-import { app, BrowserWindow, ipcMain, dialog  } from "electron";
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import path from "path";
 import fs from "fs/promises";
 import { parseFile } from "music-metadata";
@@ -42,6 +42,12 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
+function formatFolderName(date: string, time: string) {
+  const ymd = date.replace(/-/g, "");
+  const hm = time.replace(/:/g, "");
+  return `${ymd}_${hm}`;
+}
+
 // -------- IPC: 固定フォルダ D:\sunoai_bgm から mp3 + duration を返す --------
 ipcMain.handle("load-fixed-mp3", async () => {
   const folder = "D:\\sunoai_bgm";
@@ -66,21 +72,24 @@ ipcMain.handle("load-fixed-mp3", async () => {
         }
 
         return { id: name, name, durationSec };
-      })
+      }),
     );
 
     return { ok: true, folder, files };
   } catch (e: any) {
-    return { ok: false, error: e?.message ?? "Unknown error", folder, files: [] };
+    return {
+      ok: false,
+      error: e?.message ?? "Unknown error",
+      folder,
+      files: [],
+    };
   }
 });
 
 ipcMain.handle("pick-image", async () => {
   const result = await dialog.showOpenDialog({
     properties: ["openFile"],
-    filters: [
-      { name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] },
-    ],
+    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] }],
   });
 
   if (result.canceled || result.filePaths.length === 0) {
@@ -101,3 +110,43 @@ ipcMain.handle("pick-image", async () => {
     previewUrl: `data:${mime};base64,${buffer.toString("base64")}`,
   };
 });
+
+ipcMain.handle("pick-folder", async () => {
+  const result = await dialog.showOpenDialog({
+    defaultPath: "D:\\youtubeBGMPostReservation",
+    properties: ["openDirectory"],
+  });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+  return result.filePaths[0];
+});
+
+ipcMain.handle(
+  "save-video-meta",
+  async (_event, saveDir, publishDate, publishTime) => {
+    const folderName = formatFolderName(publishDate, publishTime);
+    // const BASE_DIR = "D:\\youtubeBGMPostReservation";
+    const targetDir = path.join(saveDir, folderName);
+    await fs.mkdir(targetDir, { recursive: true });
+    return {
+      success: true,
+      // dirPath: targetDir,
+    };
+  },
+);
+
+ipcMain.handle(
+  "save-meta",
+  async (_event, targetDir, meta) => {
+    // JSONファイルパス
+    const jsonFilePath = path.join(
+      targetDir,
+      `${meta.publishAt}_${meta.title.split(" ")[0]}.json`,
+    );
+
+    await fs.writeFile(jsonFilePath, JSON.stringify(meta, null, 2), "utf-8");
+    console.log(meta);
+  },
+);

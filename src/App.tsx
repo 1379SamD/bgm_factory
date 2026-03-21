@@ -32,8 +32,61 @@ export default function App() {
   const [descJp, setDescJp] = useState("");
   const [descEn, setDescEn] = useState("");
   const [hashtags, setHashtags] = useState("");
-  const [imagePath, setImagePath] = useState("");
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [thumbnailPath, setThumbnailPath] = useState("");
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
+  const [backgroundPath, setBackgroundPath] = useState("");
+  const [backgroundPreview, setBackgroundPreview] = useState("");
+  const [saveDir, setSaveDir] = useState("D:\\youtubeBGMPostReservation");
+  const [date, setDate] = useState("");
+  const [publishTime, setPublishTime] = useState("22:00");
+
+  const currentDate = (): string => {
+    const now = new Date();
+    const year = String(now.getFullYear());
+    const month = String(now.getMonth() + 1); // 注意：0始まり
+    const day = String(now.getDate());
+    const hour = String(now.getHours());
+    const min = String(now.getMinutes());
+    const sec = String(now.getSeconds());
+    return year + month + day + hour + min + sec;
+  };
+
+  const handlePickFolder = async () => {
+    const result = await window.api.pickFolder();
+    if (result === null) return;
+
+    setSaveDir(result);
+  };
+
+  const handleSaveVideoMeta = async () => {
+    if (!date || !publishTime) {
+      alert("投稿日と投稿時間を選択してください");
+      return;
+    };
+    
+    //メインフォルダ配下に、予約投稿に合わせてフォルダを作成する
+    await window.api.saveVideoMeta(saveDir, date, publishTime);
+    
+    const now = new Date();
+    const meta = {
+      id: `${date}_${Date.now()}`,
+      title: title,
+      jpDescription: descJp,
+      EnDescription: descEn,
+      hashtags: hashtags,
+      thumbnailPath: thumbnailPath,
+      videoPath: "",
+      status: "pending",
+      visibility: "private",
+      publishAt: `${date}T${publishTime}`,
+      createdAt: now.toISOString(),
+    };
+
+    await window.api.saveMeta(
+      saveDir,
+      meta
+    );
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -107,7 +160,10 @@ export default function App() {
     alert("コピーしました");
   };
 
-  const pickImage = async () => {
+  const pickImage = async (
+    setImagePath: (v: string) => void,
+    setPreviewUrl: (v: string) => void,
+  ) => {
     const result = await window.api.pickImage();
     if (!result) return;
 
@@ -115,7 +171,18 @@ export default function App() {
     setPreviewUrl(result.previewUrl);
   };
 
-  const imageSrc = imagePath ? `file:///${imagePath.replace(/\\/g, "/")}` : "";
+  const thumbnailSrc = thumbnailPath
+    ? `file:///${thumbnailPath.replace(/\\/g, "/")}`
+    : "";
+  const backgroundSrc = backgroundPath
+    ? `file:///${backgroundPath.replace(/\\/g, "/")}`
+    : "";
+
+  // const saveDir1 = `${date}`;
+
+  const formatDate = (date: string) => {
+    return date.replace(/-/g, "");
+  };
 
   return (
     <div className={style.app}>
@@ -138,32 +205,70 @@ export default function App() {
           clearAll={clearAll}
         />
 
-        {/* Center */}
-        <Center
-          selectedTracks={selectedTracks}
-          formatMMSS={formatMMSS}
-          formatHHMMSS={formatHHMMSS}
-          totalSec={totalSec}
-          over60min={over60min}
-          imagePath={imagePath}
-          pickImage={pickImage}
-          imageSrc={imageSrc}
-          previewUrl={previewUrl}
-        />
+        <section className={style.test}>
+          <div className={style.test1}>
+            {/* Center */}
+            <Center
+              selectedTracks={selectedTracks}
+              formatMMSS={formatMMSS}
+              formatHHMMSS={formatHHMMSS}
+              totalSec={totalSec}
+              over60min={over60min}
+              pickImage={pickImage}
+              // thumbnailSrc={thumbnailSrc}
+              setThumbnailPath={setThumbnailPath}
+              thumbnailPreview={thumbnailPreview}
+              setThumbnailPreview={setThumbnailPreview}
+              // backgroundSrc={backgroundSrc}
+              setBackgroundPath={setBackgroundPath}
+              backgroundPreview={backgroundPreview}
+              setBackgroundPreview={setBackgroundPreview}
+            />
 
-        {/* Right */}
-        <Right
-          title={title}
-          setTitle={setTitle}
-          descJp={descJp}
-          setDescJp={setDescJp}
-          descEn={descEn}
-          setDescEn={setDescEn}
-          hashtags={hashtags}
-          setHashtags={setHashtags}
-          saveMetaToLocal={saveMetaToLocal}
-          copy={copy}
-        />
+            {/* Right */}
+            <Right
+              title={title}
+              setTitle={setTitle}
+              descJp={descJp}
+              setDescJp={setDescJp}
+              descEn={descEn}
+              setDescEn={setDescEn}
+              hashtags={hashtags}
+              setHashtags={setHashtags}
+              saveMetaToLocal={saveMetaToLocal}
+              copy={copy}
+              setDate={setDate}
+              date={date}
+              setPublishTime={setPublishTime}
+              publishTime={publishTime}
+            />
+          </div>
+          <div className={style.test2}>
+            <p className={style.saveFolder}>
+              {/* D:\\youtubeBGMPostReservation\\{currentDate()}\\
+               */}
+              {/* {saveDir}{formatDate(`${date}`)}_{title.split(" ")[0]} */}
+              {saveDir}
+              {formatDate(`${date}`)}
+            </p>
+            <div className={style.test3}>
+              <div className={style.saveFolderBtn}>
+                <button
+                  className={style.folderSelectBtn}
+                  onClick={handlePickFolder}
+                >
+                  メインフォルダ選択
+                </button>
+                <button
+                  className={style.generateBtn}
+                  onClick={handleSaveVideoMeta}
+                >
+                  生成
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

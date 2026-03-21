@@ -45,6 +45,18 @@ declare global {
         path: string;
         previewUrl: string;
       } | null>;
-    }
+      pickFolder: () => Promise<string | null>;
+      saveVideoMeta: (
+        saveDir: string,
+        publishDate: string,
+        publishTime: string
+      ) => Promise<{
+        success: boolean;
+      }>;
+      saveMeta: (
+        saveDir: string,
+        meta: any,
+      ) => void
+    };
   }
 }

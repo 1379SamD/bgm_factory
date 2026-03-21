@@ -8,10 +8,18 @@ type Props = {
   formatHHMMSS: (totalSec: number) => string;
   totalSec: number;
   over60min: boolean;
-  imagePath: string;
-  pickImage: () => Promise<void>;
-  imageSrc: string;
-  previewUrl: string;
+  // imagePath: string;
+  pickImage: (setPath: (v: string) => void, setPreview: (v: string) => void) => void;
+  // imageSrc: string;
+  // previewUrl: string;
+
+  setThumbnailPath: (v: string) => void;
+  setThumbnailPreview: (v: string) => void;
+  setBackgroundPath: (v: string) => void;
+  setBackgroundPreview: (v: string) => void;
+  thumbnailPreview: string;
+  backgroundPreview: string;
+
 };
 
 export default function Center({
@@ -20,11 +28,19 @@ export default function Center({
   formatHHMMSS,
   totalSec,
   over60min,
-  imagePath,
+  // imagePath,
   pickImage,
-  previewUrl,
+  setThumbnailPath,
+  setThumbnailPreview,
+  setBackgroundPath,
+  setBackgroundPreview,
+  thumbnailPreview,
+  backgroundPreview,
 }: Props) {
   const [level, setLevel] = useState(3);
+  let sumIncludingLoops = totalSec * level;
+  let loopsOver60min = sumIncludingLoops >= 60*60;
+
   return (
     <section className={styles.cardWide}>
       <div className={styles.cardTitle}>BUILD</div>
@@ -43,6 +59,8 @@ export default function Center({
               <span
                 style={{
                   flex: 1,
+                  minWidth: 0,
+                  display: "block",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -57,7 +75,7 @@ export default function Center({
       </div>
 
       <div className={styles.roopCounter}>
-        <span>ループ回数：</span>
+        <span className={styles.cardTitle}>ループ回数：{level}回</span>
         <div className={styles.roopSelectNum}>
           {[1, 2, 3, 4].map((n) => (
             <label key={n}>
@@ -75,47 +93,64 @@ export default function Center({
       </div>
 
       <div className={styles.totalLine}>
-        合計：<b>{formatHHMMSS(totalSec)}</b>{" "}
+        合計：<b>{formatHHMMSS(sumIncludingLoops)}</b>{" "}
         <span
-          className={`${styles.badge} ${over60min ? styles.badgeOk : styles.badgeNg}`}
+          className={`${styles.badge} ${loopsOver60min ? styles.badgeOk : styles.badgeNg}`}
         >
-          {over60min ? "Ready" : "Need more"}
+          {loopsOver60min ? "Ready" : "Need more"}
         </span>
       </div>
 
       <div className={styles.thumbnailPic}>
-        <span>サムネイル画像</span>
+        <span className={styles.cardTitle}>サムネイル画像：</span>
         <div className={styles.field}>
           {/* <div className={styles.label}>Thumbnail</div> */}
-          <button onClick={pickImage}>画像を選択</button>
+          <button onClick={() => pickImage(setThumbnailPath, setThumbnailPreview)} className={styles.picButton}>
+            画像を選択
+          </button>
 
-          {imagePath && <div>{imagePath}</div>}
+          {/* {imagePath && <div className={styles.imgPath}>{imagePath}</div>} */}
 
-          {previewUrl && (
-            <img
-              src={previewUrl}
-              alt="preview"
-              style={{
-                width: 220,
-                height: 120,
-                objectFit: "cover",
-                borderRadius: 8,
-              }}
-            />
-          )}
+          <div className={styles.imgSize}>
+            {thumbnailPreview && (
+              <img
+                src={thumbnailPreview}
+                alt="preview"
+                style={{
+                  width: 220,
+                  height: 120,
+                  objectFit: "cover",
+                  borderRadius: 8,
+                }}
+              />
+            )}
+          </div>
         </div>
-      </div>
+        <span className={styles.cardTitle}>背景画像：</span>
 
-      <div className={styles.actions}>
-        <button
-          className={styles.btnPrimary}
-          disabled={selectedTracks.length === 0}
-        >
-          作業フォルダ作成（次：IPCで実装）
-        </button>
-        <button className={styles.btn} disabled>
-          フォルダを開く（次：IPC）
-        </button>
+        <div className={styles.field}>
+          {/* <div className={styles.label}>Thumbnail</div> */}
+          <button onClick={() => pickImage(setBackgroundPath, setBackgroundPreview)} className={styles.picButton}>
+            画像を選択
+          </button>
+
+          {/* {imagePath && <div className={styles.imgPath}>{imagePath}</div>} */}
+
+          <div className={styles.imgSize}>
+            {backgroundPreview && (
+              <img
+                src={backgroundPreview}
+                alt="preview"
+                style={{
+                  width: 220,
+                  height: 120,
+                  objectFit: "cover",
+                  borderRadius: 8,
+                }}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );
