@@ -27,7 +27,7 @@ export default function Center({
   formatMMSS,
   formatHHMMSS,
   totalSec,
-  over60min,
+  // over60min,
   // imagePath,
   pickImage,
   setThumbnailPath,

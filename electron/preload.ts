@@ -8,4 +8,5 @@ contextBridge.exposeInMainWorld("api", {
   saveVideoMeta: (saveDir: string, publishDate: string, publishTime: string) =>
     ipcRenderer.invoke("save-video-meta", saveDir, publishDate, publishTime),
   saveMeta:(saveDir: string, meta: any) => ipcRenderer.invoke("save-meta", saveDir, meta),
+  wavFileConcat:(bgmDetail: any[], outputDir: string) => ipcRenderer.invoke("wavFile-concat", bgmDetail, outputDir),
 });

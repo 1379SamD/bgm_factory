@@ -47,6 +47,10 @@ function formatFolderName(date: string, time: string) {
   const hm = time.replace(/:/g, "");
   return `${ymd}_${hm}`;
 }
+function formatJsonName(publishAt :string) {
+  const publishAtFormat = publishAt.replace(/:/g, "");
+  return publishAtFormat;
+}
 
 // -------- IPC: 固定フォルダ D:\sunoai_bgm から mp3 + duration を返す --------
 ipcMain.handle("load-fixed-mp3", async () => {
@@ -71,7 +75,7 @@ ipcMain.handle("load-fixed-mp3", async () => {
           durationSec = 0;
         }
 
-        return { id: name, name, durationSec };
+        return { id: name, name, durationSec, fullPath};
       }),
     );
 
@@ -132,7 +136,7 @@ ipcMain.handle(
     await fs.mkdir(targetDir, { recursive: true });
     return {
       success: true,
-      // dirPath: targetDir,
+      dirPath: targetDir,
     };
   },
 );
@@ -143,10 +147,23 @@ ipcMain.handle(
     // JSONファイルパス
     const jsonFilePath = path.join(
       targetDir,
-      `${meta.publishAt}_${meta.title.split(" ")[0]}.json`,
+      `${formatJsonName(meta.publishAt)}_${meta.title.split(" ")[0]}.json`,
+      // `test.json`,
     );
+    console.log(jsonFilePath);
 
     await fs.writeFile(jsonFilePath, JSON.stringify(meta, null, 2), "utf-8");
     console.log(meta);
   },
+);
+
+ipcMain.handle(
+  "wavFile-concat",
+  async(_event, bgmDetail: any[], outputDir: string) => {
+    const wavFilePath = path.join(outputDir, "wavInput.txt");
+
+    const WavContent = Array(3).fill(bgmDetail).flat().map((b) => `file '${b.fullPath.replace(/\\/g, "/")}'`).join("\n");
+    await fs.writeFile(wavFilePath, WavContent, "utf-8");
+    return wavFilePath;
+  }
 );

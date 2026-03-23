@@ -6,5 +6,6 @@ electron.contextBridge.exposeInMainWorld("api", {
   pickImage: () => electron.ipcRenderer.invoke("pick-image"),
   pickFolder: () => electron.ipcRenderer.invoke("pick-folder"),
   saveVideoMeta: (saveDir, publishDate, publishTime) => electron.ipcRenderer.invoke("save-video-meta", saveDir, publishDate, publishTime),
-  saveMeta: (saveDir, meta) => electron.ipcRenderer.invoke("save-meta", saveDir, meta)
+  saveMeta: (saveDir, meta) => electron.ipcRenderer.invoke("save-meta", saveDir, meta),
+  wavFileConcat: (bgmDetail, outputDir) => electron.ipcRenderer.invoke("wavFile-concat", bgmDetail, outputDir)
 });

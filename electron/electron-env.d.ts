@@ -52,11 +52,15 @@ declare global {
         publishTime: string
       ) => Promise<{
         success: boolean;
+        dirPath: string;
       }>;
       saveMeta: (
         saveDir: string,
         meta: any,
-      ) => void
+      ) => void;
+      wavFileConcat: (
+        bgmDetail: any[], outputDir: string
+      ) => string;
     };
   }
 }

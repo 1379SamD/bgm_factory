@@ -9,6 +9,7 @@ export type Track = {
   id: string;
   name: string;
   durationSec: number;
+  fullPath: string;
 };
 
 // BGM一曲の演奏時間
@@ -65,12 +66,13 @@ export default function App() {
     };
     
     //メインフォルダ配下に、予約投稿に合わせてフォルダを作成する
-    await window.api.saveVideoMeta(saveDir, date, publishTime);
+    const targetDir = await window.api.saveVideoMeta(saveDir, date, publishTime);
     
     const now = new Date();
     const meta = {
       id: `${date}_${Date.now()}`,
       title: title,
+      bgmDetail: selectedTracks,
       jpDescription: descJp,
       EnDescription: descEn,
       hashtags: hashtags,
@@ -83,9 +85,12 @@ export default function App() {
     };
 
     await window.api.saveMeta(
-      saveDir,
+      targetDir.dirPath,
       meta
     );
+
+    //wavファイル連結処理
+    await window.api.wavFileConcat(meta.bgmDetail, targetDir.dirPath);
   };
 
   useEffect(() => {
