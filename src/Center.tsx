@@ -1,5 +1,5 @@
 import styles from "./App.module.css";
-import type { Track } from "./App.tsx";
+import type { Track } from "./types/track.ts";
 import { useState } from "react";
 
 type Props = {

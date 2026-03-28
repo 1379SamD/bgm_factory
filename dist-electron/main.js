@@ -1,5 +1,6 @@
 import "electron";
 import "path";
 import "fs/promises";
-import "./main-CZ7rALxe.js";
+import "./main-CbltXmmi.js";
 import "url";
+import "child_process";

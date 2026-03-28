@@ -7,5 +7,7 @@ electron.contextBridge.exposeInMainWorld("api", {
   pickFolder: () => electron.ipcRenderer.invoke("pick-folder"),
   saveVideoMeta: (saveDir, publishDate, publishTime) => electron.ipcRenderer.invoke("save-video-meta", saveDir, publishDate, publishTime),
   saveMeta: (saveDir, meta) => electron.ipcRenderer.invoke("save-meta", saveDir, meta),
-  wavFileConcat: (bgmDetail, outputDir) => electron.ipcRenderer.invoke("wavFile-concat", bgmDetail, outputDir)
+  wavFileConcat: (bgmDetail, outputDir) => electron.ipcRenderer.invoke("wavFile-concat", bgmDetail, outputDir),
+  wavFileGenerate: (wavFilepath) => electron.ipcRenderer.invoke("wavFile-generate", wavFilepath),
+  mp4FileGenerate: (outputDir, backgroundPath) => electron.ipcRenderer.invoke("mp4File-generate", outputDir, backgroundPath)
 });

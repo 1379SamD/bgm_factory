@@ -7,22 +7,22 @@ type Props = {
 };
 
 export default function Header({
-  selectedCount,
-  totalSecTime,
-  over60min,
+  // selectedCount,
+  // totalSecTime,
+  // over60min,
 }: Props) {
   return (
     <div className={styles.header}>
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <div className={styles.brand}>BGM Factory</div>
-        <div className={styles.sub}>
+        {/* <div className={styles.sub}>
           選択 {selectedCount}曲 / 合計 {totalSecTime}{" "}
           <span
             className={`${styles.badge} ${over60min ? styles.badgeOk : styles.badgeNg}`}
           >
             {over60min ? "✓ 60分超え" : "60分未満"}
           </span>
-        </div>
+        </div> */}
       </div>
 
       <div className={styles.tabs}>

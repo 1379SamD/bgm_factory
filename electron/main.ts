@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs/promises";
 import { parseFile } from "music-metadata";
 import { fileURLToPath } from "url";
+import { exec } from "child_process";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -47,7 +48,7 @@ function formatFolderName(date: string, time: string) {
   const hm = time.replace(/:/g, "");
   return `${ymd}_${hm}`;
 }
-function formatJsonName(publishAt :string) {
+function formatJsonName(publishAt: string) {
   const publishAtFormat = publishAt.replace(/:/g, "");
   return publishAtFormat;
 }
@@ -60,7 +61,7 @@ ipcMain.handle("load-fixed-mp3", async () => {
     const entries = await fs.readdir(folder);
 
     const mp3Names = entries
-      .filter((name) => name.toLowerCase().endsWith(".mp3"))
+      .filter((name) => name.toLowerCase().endsWith(".wav"))
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
     const files = await Promise.all(
@@ -75,7 +76,7 @@ ipcMain.handle("load-fixed-mp3", async () => {
           durationSec = 0;
         }
 
-        return { id: name, name, durationSec, fullPath};
+        return { id: name, name, durationSec, fullPath };
       }),
     );
 
@@ -141,29 +142,121 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle(
-  "save-meta",
-  async (_event, targetDir, meta) => {
-    // JSONファイルパス
-    const jsonFilePath = path.join(
-      targetDir,
-      `${formatJsonName(meta.publishAt)}_${meta.title.split(" ")[0]}.json`,
-      // `test.json`,
-    );
-    console.log(jsonFilePath);
+ipcMain.handle("save-meta", async (_event, targetDir, meta) => {
+  // JSONファイルパス
+  const jsonFilePath = path.join(
+    targetDir,
+    `${formatJsonName(meta.publishAt)}_${meta.title.split(" ")[0]}.json`,
+    // `test.json`,
+  );
+  console.log(jsonFilePath);
 
-    await fs.writeFile(jsonFilePath, JSON.stringify(meta, null, 2), "utf-8");
-    console.log(meta);
-  },
-);
+  await fs.writeFile(jsonFilePath, JSON.stringify(meta, null, 2), "utf-8");
+  console.log(meta);
+});
 
 ipcMain.handle(
   "wavFile-concat",
-  async(_event, bgmDetail: any[], outputDir: string) => {
+  async (_event, bgmDetail: any[], outputDir: string) => {
     const wavFilePath = path.join(outputDir, "wavInput.txt");
 
-    const WavContent = Array(3).fill(bgmDetail).flat().map((b) => `file '${b.fullPath.replace(/\\/g, "/")}'`).join("\n");
+    const WavContent = Array(3)
+      .fill(bgmDetail)
+      .flat()
+      .map((b) => `file '${b.fullPath.replace(/\\/g, "/")}'`)
+      .join("\n");
     await fs.writeFile(wavFilePath, WavContent, "utf-8");
     return wavFilePath;
-  }
+  },
+);
+
+ipcMain.handle("wavFile-generate", async (_event, outputDir: string) => {
+  const txtPath = path.join(outputDir, "wavInput.txt").replace(/\\/g, "/");
+  const outputPath = path.join(outputDir, "output.wav").replace(/\\/g, "/");
+
+  return await new Promise((resolve, reject) => {
+    exec(
+      `ffmpeg -f concat -safe 0 -i ${txtPath} -c copy ${outputPath}`,
+      (err) => {
+        if (err) {
+          console.error("エラー:", reject(err));
+          return;
+        }
+        resolve(true);
+        console.log("結合完了！");
+      },
+    );
+  });
+});
+
+// ipcMain.handle("mp4File-generate", async(_event, outputDir: string, backgroundPath: string) => {
+
+//   // const imagePath = "D:/path/to/image.jpg".replace(/\\/g, "/");
+//   const audioPath = path.join(outputDir, "output.mp3").replace(/\\/g, "/");
+//   const outputPath = path.join(outputDir, "output.mp4").replace(/\\/g, "/");
+
+//   exec(
+//   `ffmpeg -loop 1 -i "${backgroundPath}" -i "${audioPath}" \
+//   -c:v libx264 -tune stillimage -c:a aac -b:a 192k \
+//   -pix_fmt yuv420p -shortest "${outputPath}"`,
+//   (err) => {
+//     if (err) {
+//       console.error("動画生成失敗", err);
+//     } else {
+//       console.log("動画生成成功！");
+//     }
+//   }
+// );
+// });
+
+ipcMain.handle(
+  "mp4File-generate",
+  async (_event, outputDir: string, backgroundPath: string) => {
+    const imagePath = backgroundPath.replace(/\\/g, "/");
+    const audioPath = path.join(outputDir, "output.wav").replace(/\\/g, "/");
+    const outputPath = path.join(outputDir, "output.mp4").replace(/\\/g, "/");
+
+    // const cmd =
+    //   `ffmpeg -y -loop 1 -framerate 1 -i "${imagePath}" -i "${audioPath}" ` +
+    //   `-c:v h264_nvenc -preset p4 ` +
+    //   `-c:a aac -b:a 192k ` +
+    //   `-pix_fmt yuv420p -shortest "${outputPath}"`;
+// const cmd =
+//   `ffmpeg -y -loop 1 -i "${imagePath}" -i "${audioPath}" ` +
+//   `-r 2 ` +
+//   `-c:v h264_nvenc -preset p4 -bf 0 ` +
+//   `-c:a aac -b:a 192k ` +
+//   `-pix_fmt yuv420p ` +
+//   `-movflags +faststart ` +
+//   `-shortest "${outputPath}"`;
+const cmd =
+  `ffmpeg -y -loop 1 -framerate 2 -i "${imagePath}" -i "${audioPath}" ` +
+  `-fflags +genpts ` +
+  `-vf "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080" ` +
+  `-c:v h264_nvenc -preset p4 -bf 0 ` +
+  `-c:a aac -b:a 192k ` +
+  `-pix_fmt yuv420p ` +
+  `-movflags +faststart ` +
+  `-shortest "${outputPath}"`;
+
+    return await new Promise<{ success: boolean; outputPath: string }>(
+      (resolve, reject) => {
+        exec(cmd, (err, stdout, stderr) => {
+          if (err) {
+            console.error("動画生成失敗", err);
+            console.error("stdout:", stdout);
+            console.error(stderr);
+            reject(err);
+            return;
+          }
+
+          console.log("動画生成成功！");
+          resolve({
+            success: true,
+            outputPath,
+          });
+        });
+      },
+    );
+  },
 );

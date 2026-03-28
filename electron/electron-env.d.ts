@@ -61,6 +61,13 @@ declare global {
       wavFileConcat: (
         bgmDetail: any[], outputDir: string
       ) => string;
+      wavFileGenerate: (
+        wavFilePath: string,
+      ) => string;
+      mp4FileGenerate: (
+        outputDir: string,
+        backgroundPath: string,
+      ) => void;
     };
   }
 }
