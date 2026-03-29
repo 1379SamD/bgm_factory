@@ -174,12 +174,12 @@ ipcMain.handle("wavFile-generate", async (_event, outputDir: string) => {
   const txtPath = path.join(outputDir, "wavInput.txt").replace(/\\/g, "/");
   const outputPath = path.join(outputDir, "output.wav").replace(/\\/g, "/");
 
-  return await new Promise((resolve, reject) => {
+  return await new Promise((resolve) => {
     exec(
       `ffmpeg -f concat -safe 0 -i ${txtPath} -c copy ${outputPath}`,
       (err) => {
         if (err) {
-          console.error("エラー:", reject(err));
+          console.error("エラー:", err);
           return;
         }
         resolve(true);
@@ -189,26 +189,6 @@ ipcMain.handle("wavFile-generate", async (_event, outputDir: string) => {
   });
 });
 
-// ipcMain.handle("mp4File-generate", async(_event, outputDir: string, backgroundPath: string) => {
-
-//   // const imagePath = "D:/path/to/image.jpg".replace(/\\/g, "/");
-//   const audioPath = path.join(outputDir, "output.mp3").replace(/\\/g, "/");
-//   const outputPath = path.join(outputDir, "output.mp4").replace(/\\/g, "/");
-
-//   exec(
-//   `ffmpeg -loop 1 -i "${backgroundPath}" -i "${audioPath}" \
-//   -c:v libx264 -tune stillimage -c:a aac -b:a 192k \
-//   -pix_fmt yuv420p -shortest "${outputPath}"`,
-//   (err) => {
-//     if (err) {
-//       console.error("動画生成失敗", err);
-//     } else {
-//       console.log("動画生成成功！");
-//     }
-//   }
-// );
-// });
-
 ipcMain.handle(
   "mp4File-generate",
   async (_event, outputDir: string, backgroundPath: string) => {
@@ -216,28 +196,15 @@ ipcMain.handle(
     const audioPath = path.join(outputDir, "output.wav").replace(/\\/g, "/");
     const outputPath = path.join(outputDir, "output.mp4").replace(/\\/g, "/");
 
-    // const cmd =
-    //   `ffmpeg -y -loop 1 -framerate 1 -i "${imagePath}" -i "${audioPath}" ` +
-    //   `-c:v h264_nvenc -preset p4 ` +
-    //   `-c:a aac -b:a 192k ` +
-    //   `-pix_fmt yuv420p -shortest "${outputPath}"`;
-// const cmd =
-//   `ffmpeg -y -loop 1 -i "${imagePath}" -i "${audioPath}" ` +
-//   `-r 2 ` +
-//   `-c:v h264_nvenc -preset p4 -bf 0 ` +
-//   `-c:a aac -b:a 192k ` +
-//   `-pix_fmt yuv420p ` +
-//   `-movflags +faststart ` +
-//   `-shortest "${outputPath}"`;
-const cmd =
-  `ffmpeg -y -loop 1 -framerate 2 -i "${imagePath}" -i "${audioPath}" ` +
-  `-fflags +genpts ` +
-  `-vf "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080" ` +
-  `-c:v h264_nvenc -preset p4 -bf 0 ` +
-  `-c:a aac -b:a 192k ` +
-  `-pix_fmt yuv420p ` +
-  `-movflags +faststart ` +
-  `-shortest "${outputPath}"`;
+    const cmd =
+      `ffmpeg -y -loop 1 -framerate 2 -i "${imagePath}" -i "${audioPath}" ` +
+      `-fflags +genpts ` +
+      `-vf "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080" ` +
+      `-c:v h264_nvenc -preset p4 -bf 0 ` +
+      `-c:a aac -b:a 192k ` +
+      `-pix_fmt yuv420p ` +
+      `-movflags +faststart ` +
+      `-shortest "${outputPath}"`;
 
     return await new Promise<{ success: boolean; outputPath: string }>(
       (resolve, reject) => {
@@ -260,3 +227,35 @@ const cmd =
     );
   },
 );
+
+async function getJsonFilesRecursive(dir: string): Promise<any[]> {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+
+  let results: any[] = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      // フォルダなら再帰
+      const sub = await getJsonFilesRecursive(fullPath);
+      results = results.concat(sub);
+    } else if (entry.name.endsWith(".json")) {
+      // JSONなら読む
+      const content = await fs.readFile(fullPath, "utf-8");
+      results.push(JSON.parse(content));
+    }
+  }
+
+  return results;
+}
+
+ipcMain.handle("load-json-files", async (_event, dirPath: string) => {
+  try {
+    const result = await getJsonFilesRecursive(dirPath);
+    return result;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+});

@@ -1,0 +1,77 @@
+.columns {
+  display: grid;
+  grid-template-columns: 550px 1fr;
+  gap: 16px;
+  /* padding: 16px; */
+}
+
+.card {
+  border-radius: 5px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 880px;
+}
+
+.cardTitle {
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  font-weight: 800;
+  color: #c9d2e3;
+  margin: 0;
+}
+
+.jsonList {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  max-height: 740px;
+  overflow: auto;
+  font-size: 12px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  /* gap: 10px; */
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  min-width: 0;
+  margin: 0;
+}
+
+.jsonTextTitle {
+  margin: 0;
+  padding: 0;
+}
+
+.jsonTextTime {
+  margin: 10px 0px 0px;
+  padding: 0;
+}
+
+.publishBtn {
+  padding: 5px;
+  width: 70px;
+  height: 30px;
+  border-radius: 5px;
+}
+
+.listStyle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

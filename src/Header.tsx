@@ -1,16 +1,11 @@
 import styles from "./App.module.css";
 
+type TabType = "create" | "schedule";
 type Props = {
-  selectedCount: number;
-  totalSecTime: string;
-  over60min: boolean;
+  setActiveTab: React.Dispatch<React.SetStateAction<TabType>>;
 };
 
-export default function Header({
-  // selectedCount,
-  // totalSecTime,
-  // over60min,
-}: Props) {
+export default function Header({ setActiveTab }: Props) {
   return (
     <div className={styles.header}>
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -26,12 +21,20 @@ export default function Header({
       </div>
 
       <div className={styles.tabs}>
-        <button className={`${styles.tab} ${styles.tabActive}`}>Create</button>
-        <button className={styles.tab} disabled>
-          Publish（v2）
+        <button
+          onClick={() => setActiveTab("create")}
+          className={`${styles.tab} ${styles.tabActive}`}
+        >
+          Create
         </button>
-        <button className={styles.tab} disabled>
-          Analytics（後で）
+        <button
+          onClick={() => setActiveTab("schedule")}
+          className={styles.tab}
+        >
+          Schedule
+        </button>
+        <button className={styles.tab}>
+          Analytics
         </button>
       </div>
     </div>

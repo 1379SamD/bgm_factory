@@ -68,6 +68,9 @@ declare global {
         outputDir: string,
         backgroundPath: string,
       ) => void;
+      loadJsonFiles: (
+        dirPath
+      ) => any[]
     };
   }
 }

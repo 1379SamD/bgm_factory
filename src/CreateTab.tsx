@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect } from "react";
-import Header from "./Header";
 import Left from "./Left";
 import Center from "./Center";
 import Right from "./Right";
@@ -156,13 +155,13 @@ export default function CreateTab() {
   };
 
   return (
-    <div className={style.app}>
+    <div>
       {/* Header */}
-      <Header
+      {/* <Header
         selectedCount={selectedTracks.length}
         totalSecTime={formatHHMMSS(totalSec)}
         over60min={over60min}
-      />
+      /> */}
 
       {/* columns */}
       <div className={style.columns}>

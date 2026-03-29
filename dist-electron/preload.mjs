@@ -9,5 +9,6 @@ electron.contextBridge.exposeInMainWorld("api", {
   saveMeta: (saveDir, meta) => electron.ipcRenderer.invoke("save-meta", saveDir, meta),
   wavFileConcat: (bgmDetail, outputDir) => electron.ipcRenderer.invoke("wavFile-concat", bgmDetail, outputDir),
   wavFileGenerate: (wavFilepath) => electron.ipcRenderer.invoke("wavFile-generate", wavFilepath),
-  mp4FileGenerate: (outputDir, backgroundPath) => electron.ipcRenderer.invoke("mp4File-generate", outputDir, backgroundPath)
+  mp4FileGenerate: (outputDir, backgroundPath) => electron.ipcRenderer.invoke("mp4File-generate", outputDir, backgroundPath),
+  loadJsonFiles: (dirPath) => electron.ipcRenderer.invoke("load-json-files", dirPath)
 });
