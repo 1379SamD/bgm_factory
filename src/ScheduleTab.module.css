@@ -5,7 +5,7 @@
   /* padding: 16px; */
 }
 
-.card {
+.jsonPanel {
   border-radius: 5px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.06);
@@ -19,6 +19,56 @@
   width: 100%;
   box-sizing: border-box;
   height: 880px;
+}
+
+.detailPanel {
+  border-radius: 5px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 500px;
+}
+
+.detailList {
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 500px;
+}
+
+.calendarPanel {
+  margin-top: 16px;
+  border-radius: 5px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 364px;
 }
 
 .cardTitle {
@@ -51,6 +101,10 @@
   transition: background 0.15s ease;
   min-width: 0;
   margin: 0;
+}
+
+.row:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .jsonTextTitle {

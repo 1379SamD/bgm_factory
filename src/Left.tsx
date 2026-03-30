@@ -41,7 +41,7 @@ export default function Left({
       <div className={styles.list}>
         {tracks.map((t) => (
           <label key={t.id} className={styles.row}>
-            <input
+            <input                                  
               type="checkbox"
               checked={selectedIds.has(t.id)}
               onChange={() => toggle(t.id)}

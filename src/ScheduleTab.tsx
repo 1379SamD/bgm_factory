@@ -17,7 +17,7 @@ export default function ScheduleTab() {
 
   return (
     <div className={styles.columns}>
-      <section className={styles.card}>
+      <section className={styles.jsonPanel}>
         <p className={styles.cardTitle}>JSONファイル一覧</p>
         <div className={styles.jsonList}>
           {jsons.map((v) => (
@@ -34,7 +34,17 @@ export default function ScheduleTab() {
         </div>
       </section>
 
-      <section className={styles.card}></section>
+      <section>
+        <div className={styles.detailPanel}>
+          <p className={styles.cardTitle}>JSONファイル詳細</p>
+          <div className={styles.detailList}>
+            
+          </div>
+        </div>
+        <div className={styles.calendarPanel}>
+          <p className={styles.cardTitle}>カレンダー</p>
+        </div>
+      </section>
     </div>
   );
 }
