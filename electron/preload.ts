@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import type { VideoMeta } from "../src/types/videoMeta";
 
 console.log("[preload] loaded"); // ★追加
 contextBridge.exposeInMainWorld("api", {
@@ -17,4 +18,6 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.invoke("mp4File-generate", outputDir, backgroundPath),
   loadJsonFiles: (dirPath: string) =>
     ipcRenderer.invoke("load-json-files", dirPath),
+  ScheduleOnePost: (jsonMetaData: VideoMeta) =>
+    ipcRenderer.invoke("schedule-one-post", jsonMetaData)
 });

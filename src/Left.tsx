@@ -31,17 +31,12 @@ export default function Left({
 
       <div className={styles.sub}>
         選択 {selectedCount}曲 / 合計 {totalSecTime}{" "}
-        {/* <span
-          className={`${styles.badge} ${over60min ? styles.badgeOk : styles.badgeNg}`}
-        >
-          {over60min ? "✓ 60分超え" : "60分未満"}
-        </span> */}
       </div>
 
       <div className={styles.list}>
         {tracks.map((t) => (
           <label key={t.id} className={styles.row}>
-            <input                                  
+            <input
               type="checkbox"
               checked={selectedIds.has(t.id)}
               onChange={() => toggle(t.id)}

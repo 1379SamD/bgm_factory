@@ -1,10 +1,17 @@
+import { VideoMeta } from "./../src/types/videoMeta";
 // electron/main.ts（全部これに置き換え）
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import path from "path";
-import fs from "fs/promises";
+import fsPromises from "fs/promises";
+import fs from "fs";
 import { parseFile } from "music-metadata";
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
+import { google } from "googleapis";
+import readline from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
+import dotenv from "dotenv";
+dotenv.config();
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -58,7 +65,7 @@ ipcMain.handle("load-fixed-mp3", async () => {
   const folder = "D:\\sunoai_bgm";
 
   try {
-    const entries = await fs.readdir(folder);
+    const entries = await fsPromises.readdir(folder);
 
     const mp3Names = entries
       .filter((name) => name.toLowerCase().endsWith(".wav"))
@@ -108,7 +115,7 @@ ipcMain.handle("pick-image", async () => {
   if (ext === ".jpg" || ext === ".jpeg") mime = "image/jpeg";
   if (ext === ".webp") mime = "image/webp";
 
-  const buffer = await fs.readFile(filePath);
+  const buffer = await fsPromises.readFile(filePath);
 
   return {
     path: filePath,
@@ -134,7 +141,7 @@ ipcMain.handle(
     const folderName = formatFolderName(publishDate, publishTime);
     // const BASE_DIR = "D:\\youtubeBGMPostReservation";
     const targetDir = path.join(saveDir, folderName);
-    await fs.mkdir(targetDir, { recursive: true });
+    await fsPromises.mkdir(targetDir, { recursive: true });
     return {
       success: true,
       dirPath: targetDir,
@@ -149,10 +156,17 @@ ipcMain.handle("save-meta", async (_event, targetDir, meta) => {
     `${formatJsonName(meta.publishAt)}_${meta.title.split(" ")[0]}.json`,
     // `test.json`,
   );
-  console.log(jsonFilePath);
 
-  await fs.writeFile(jsonFilePath, JSON.stringify(meta, null, 2), "utf-8");
-  console.log(meta);
+  const newMeta = {
+    ...meta,
+    jsonFilePath,
+  };
+
+  await fsPromises.writeFile(
+    jsonFilePath,
+    JSON.stringify(newMeta, null, 2),
+    "utf-8",
+  );
 });
 
 ipcMain.handle(
@@ -165,7 +179,7 @@ ipcMain.handle(
       .flat()
       .map((b) => `file '${b.fullPath.replace(/\\/g, "/")}'`)
       .join("\n");
-    await fs.writeFile(wavFilePath, WavContent, "utf-8");
+    await fsPromises.writeFile(wavFilePath, WavContent, "utf-8");
     return wavFilePath;
   },
 );
@@ -229,7 +243,7 @@ ipcMain.handle(
 );
 
 async function getJsonFilesRecursive(dir: string): Promise<any[]> {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const entries = await fsPromises.readdir(dir, { withFileTypes: true });
 
   let results: any[] = [];
 
@@ -242,7 +256,7 @@ async function getJsonFilesRecursive(dir: string): Promise<any[]> {
       results = results.concat(sub);
     } else if (entry.name.endsWith(".json")) {
       // JSONなら読む
-      const content = await fs.readFile(fullPath, "utf-8");
+      const content = await fsPromises.readFile(fullPath, "utf-8");
       results.push(JSON.parse(content));
     }
   }
@@ -258,4 +272,111 @@ ipcMain.handle("load-json-files", async (_event, dirPath: string) => {
     console.error(e);
     return [];
   }
+});
+
+// YouTube予約投稿：個別設定
+// 処理関数
+ipcMain.handle("schedule-one-post", async (_event, jsonMetaData: VideoMeta) => {
+  // YouTube概要欄テキストの整形
+  function buildDescription(jsonMetaData: VideoMeta) {
+    return [
+      jsonMetaData.jpDescription,
+      "",
+      jsonMetaData.enDescription,
+      "",
+      jsonMetaData.hashtags,
+    ].join("\n");
+  }
+
+  // 初回作成処理
+  async function createYoutubeClient() {
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.YOUTUBE_CLIENT_ID,
+      process.env.YOUTUBE_CLIENT_SECRET,
+      process.env.YOUTUBE_REDIRECT_URI,
+    );
+
+    // //初回のみ、手動で許可して、トークンをenvに保存する必要がある。２回目以降はこちらの処理は使用しない
+    // const authUrl = oauth2Client.generateAuthUrl({
+    //   access_type: "offline",
+    //   prompt: "consent",
+    //   scope: ["https://www.googleapis.com/auth/youtube.upload"],
+    // });
+
+    // console.log("このURLをブラウザで開いて許可して:");
+    // console.log(authUrl);
+
+    // const rl = readline.createInterface({ input, output });
+    // const code = await rl.question("表示された code を貼って: ");
+    // rl.close();
+
+    // const { tokens } = await oauth2Client.getToken(code.trim());
+
+    // console.log("取得したtokens👇");
+    // console.log(JSON.stringify(tokens, null, 2));
+
+    // // ① refresh_tokenチェック（重要）
+    // if (!tokens.refresh_token) {
+    //   console.warn("⚠️ refresh_tokenが取得できてない！");
+    //   console.warn("→ prompt: 'consent' をつけて再実行して");
+    // }
+
+    // // ② .env形式で出力（コピペ用）
+    // console.log("\n==== .env に貼る ====");
+    // console.log(`YOUTUBE_ACCESS_TOKEN=${tokens.access_token ?? ""}`);
+    // console.log(`YOUTUBE_REFRESH_TOKEN=${tokens.refresh_token ?? ""}`);
+
+    // // 上記で取得した、リフレッシュトークンを手動で保存する
+
+    oauth2Client.setCredentials({
+      refresh_token: process.env.YOUTUBE_REFRESH_TOKEN,
+    });
+
+    const youtube = google.youtube({
+      version: "v3",
+      auth: oauth2Client,
+    });
+
+    console.log("YouTubeクライアント作成OK");
+
+    const response = await youtube.videos.insert({
+      part: ["snippet", "status"],
+      requestBody: {
+        snippet: {
+          title: jsonMetaData.title,
+          description: buildDescription(jsonMetaData),
+        },
+        status: {
+          privacyStatus: "private",
+          publishAt: jsonMetaData.publishAt,
+          selfDeclaredMadeForKids: false,
+        },
+      },
+      media: {
+        body: fs.createReadStream(jsonMetaData.videoPath),
+      },
+    });
+    const videoId = response.data.id;
+    console.log("アップロード成功:", videoId);
+
+    if (!videoId) {
+      throw new Error("videoIdの取得に失敗");
+    }
+
+    await youtube.thumbnails.set({
+      videoId,
+      requestBody: {},
+      media: {
+        mimeType: "image/png",
+        body: fs.createReadStream(jsonMetaData.thumbnailPath),
+      },
+    });
+
+    // return {
+    //   ...jsonMetaData,
+    //   status: "reserved",
+    //   youtubeVideoId: videoId,
+    // };
+  }
+  await createYoutubeClient();
 });

@@ -40,11 +40,11 @@
 .detailList {
   border-radius: 5px;
   margin-top: 10px;
-  padding: 16px;
+  padding: 8px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  
+  font-size: 11px;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -52,6 +52,7 @@
   width: 100%;
   box-sizing: border-box;
   height: 500px;
+  overflow: auto;
 }
 
 .calendarPanel {
@@ -128,4 +129,79 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.jsonDetailTitle {
+  margin-top: 0;
+}
+
+/* カレンダースタイル */
+.calendarPanel :global(.react-calendar) {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+}
+
+.calendarPanel :global(.react-calendar__navigation button) {
+  color: white;
+  background: none;
+}
+
+.calendarPanel :global(.react-calendar__navigation button:hover) {
+  background: red;
+}
+
+.calendarPanel :global(.react-calendar__month-view__weekdays) {
+  color: #aaa;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.calendarPanel :global(.react-calendar__month-view__days__day:not(.react-calendar__month-view__days__day--weekend)) {
+  color: white; /* 平日 */
+}
+
+.calendarPanel :global(.react-calendar__month-view__days__day--weekend) {
+  color: #38bdf8;
+}
+
+.calendarPanel :global(.react-calendar__tile) {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 5px 0 15px;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.calendarPanel :global(.react-calendar__tile:hover) {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.calendarPanel :global(.react-calendar__tile--active) {
+  background: #f97316; /* オレンジ */
+  color: white;
+}
+
+.calendarPanel :global(.react-calendar__tile--now) {
+  border: 1px solid #38bdf8; /* 水色 */
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.calendarPanel :global(.react-calendar__navigation) {
+  margin-bottom: 0;
+}
+
+.statusAndPost {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.status {
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+  margin-right: 5px;
 }

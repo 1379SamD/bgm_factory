@@ -67,10 +67,13 @@ declare global {
       mp4FileGenerate: (
         outputDir: string,
         backgroundPath: string,
-      ) => void;
+      ) => Promise<{ success: boolean; outputPath: string }>;
       loadJsonFiles: (
         dirPath
-      ) => any[]
+      ) => any[];
+      ScheduleOnePost: (
+        jsonMetaData: VideoMeta
+      ) => void
     };
   }
 }

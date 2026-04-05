@@ -48,17 +48,16 @@ export default function CreateTab() {
       title: title,
       bgmDetail: selectedTracks,
       jpDescription: descJp,
-      EnDescription: descEn,
+      enDescription: descEn,
       hashtags: hashtags,
       thumbnailPath: thumbnailPath,
       videoPath: "",
+      jsonFilePath: "",
       status: "pending",
       visibility: "private",
-      publishAt: `${date}T${publishTime}`,
+      publishAt: `${date}T${publishTime}:00+09:00`,
       createdAt: now.toISOString(),
     };
-
-    await window.api.saveMeta(targetDir.dirPath, meta);
 
     //wavファイル_テキスト連結処理
     await window.api.wavFileConcat(meta.bgmDetail, targetDir.dirPath);
@@ -67,7 +66,14 @@ export default function CreateTab() {
     await window.api.wavFileGenerate(targetDir.dirPath);
 
     //mp4ファイル生成処理
-    await window.api.mp4FileGenerate(targetDir.dirPath, backgroundPath);
+    const result = await window.api.mp4FileGenerate(
+      targetDir.dirPath,
+      backgroundPath,
+    );
+
+    meta.videoPath = result.outputPath;
+    // jsonファイル保存
+    await window.api.saveMeta(targetDir.dirPath, meta);
   };
 
   useEffect(() => {
@@ -156,13 +162,6 @@ export default function CreateTab() {
 
   return (
     <div>
-      {/* Header */}
-      {/* <Header
-        selectedCount={selectedTracks.length}
-        totalSecTime={formatHHMMSS(totalSec)}
-        over60min={over60min}
-      /> */}
-
       {/* columns */}
       <div className={style.columns}>
         {/* Left */}
