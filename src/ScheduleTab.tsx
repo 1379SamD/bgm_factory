@@ -38,14 +38,27 @@ export default function ScheduleTab() {
                   <p className={styles.jsonTextTime}>{v.publishAt}</p>
                 </div>
                 <div className={styles.statusAndPost}>
-                  <p className={styles.status}>{v.status}</p>
+                  <p className={`${styles.status} ${styles[v.status]}`}>
+                    {v.status}
+                  </p>
                   <button
                     className={styles.publishBtn}
-                    onClick={async(e) => {
+                    onClick={async (e) => {
                       e.stopPropagation();
 
                       try {
                         await window.api.ScheduleOnePost(v);
+                        // const jsonData = await window.api.ScheduleOnePost(v);
+                        // setJsons((prev) =>
+                        //   prev.map((item) =>
+                        //     item.jsonFilePath === jsonData.jsonFilePath ? jsonData : item
+                        //   )
+                        // );
+                        const dir = "D:\\youtubeBGMPostReservation";
+
+                        const data = await window.api.loadJsonFiles(dir);
+                        setJsons(data);
+
                         console.log("予約投稿成功");
                       } catch (err) {
                         console.error("予約投稿失敗", err);
@@ -76,7 +89,25 @@ export default function ScheduleTab() {
         </div>
         <div className={styles.calendarPanel}>
           <p className={styles.cardTitle}>カレンダー</p>
-          <Calendar />
+          <Calendar
+            tileContent={({ date }) => {
+              const yyyy = date.getFullYear();
+              const mm = String(date.getMonth() + 1).padStart(2, "0");
+              const dd = String(date.getDate()).padStart(2, "0");
+              const dayString = `${yyyy}-${mm}-${dd}`;
+
+              const hasScheduled = jsons.some(
+                (item) =>
+                  item.status === "scheduled" &&
+                  item.publishAt.slice(0, 10) === dayString,
+              );
+              return hasScheduled ? (
+                <div className={styles.wrapper}>
+                  <div className={styles.calendarDone}>✅</div>
+                </div>
+              ) : null;
+            }}
+          />
         </div>
       </section>
     </div>

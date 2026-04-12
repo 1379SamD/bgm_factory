@@ -205,3 +205,35 @@
   border-radius: 5px;
   margin-right: 5px;
 }
+
+/* 未投稿 */
+/* .pending {
+  background: #ccc;
+  color: #333;
+} */
+
+/* 投稿済み */
+.scheduled {
+  background: #4caf50;
+  color: white;
+}
+
+/* エラー */
+.error {
+  background: #ff4d4f;
+  color: white;
+}
+
+.wrapper  {
+  position: relative;
+  inset: 0;
+  pointer-events: none;
+}
+
+.calendarDone {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+}

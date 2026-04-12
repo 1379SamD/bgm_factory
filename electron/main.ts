@@ -296,38 +296,6 @@ ipcMain.handle("schedule-one-post", async (_event, jsonMetaData: VideoMeta) => {
       process.env.YOUTUBE_REDIRECT_URI,
     );
 
-    // //初回のみ、手動で許可して、トークンをenvに保存する必要がある。２回目以降はこちらの処理は使用しない
-    // const authUrl = oauth2Client.generateAuthUrl({
-    //   access_type: "offline",
-    //   prompt: "consent",
-    //   scope: ["https://www.googleapis.com/auth/youtube.upload"],
-    // });
-
-    // console.log("このURLをブラウザで開いて許可して:");
-    // console.log(authUrl);
-
-    // const rl = readline.createInterface({ input, output });
-    // const code = await rl.question("表示された code を貼って: ");
-    // rl.close();
-
-    // const { tokens } = await oauth2Client.getToken(code.trim());
-
-    // console.log("取得したtokens👇");
-    // console.log(JSON.stringify(tokens, null, 2));
-
-    // // ① refresh_tokenチェック（重要）
-    // if (!tokens.refresh_token) {
-    //   console.warn("⚠️ refresh_tokenが取得できてない！");
-    //   console.warn("→ prompt: 'consent' をつけて再実行して");
-    // }
-
-    // // ② .env形式で出力（コピペ用）
-    // console.log("\n==== .env に貼る ====");
-    // console.log(`YOUTUBE_ACCESS_TOKEN=${tokens.access_token ?? ""}`);
-    // console.log(`YOUTUBE_REFRESH_TOKEN=${tokens.refresh_token ?? ""}`);
-
-    // // 上記で取得した、リフレッシュトークンを手動で保存する
-
     oauth2Client.setCredentials({
       refresh_token: process.env.YOUTUBE_REFRESH_TOKEN,
     });
@@ -372,11 +340,14 @@ ipcMain.handle("schedule-one-post", async (_event, jsonMetaData: VideoMeta) => {
       },
     });
 
-    // return {
-    //   ...jsonMetaData,
-    //   status: "reserved",
-    //   youtubeVideoId: videoId,
-    // };
+    // jsonファイルのステータスの更新
+    const raw = await fsPromises.readFile(jsonMetaData.jsonFilePath, "utf-8");
+    const data: VideoMeta = JSON.parse(raw);
+
+    data.status = "scheduled";
+    await fsPromises.writeFile(jsonMetaData.jsonFilePath, JSON.stringify(data, null, 2), "utf-8");
+    
   }
+
   await createYoutubeClient();
 });

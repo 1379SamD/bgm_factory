@@ -7,6 +7,7 @@ export type VideoMeta = {
   hashtags: string;
   thumbnailPath: string;
   videoPath: string;
+  jsonFilePath: string;
   status: string;
   visibility: string;
   publishAt: string;
