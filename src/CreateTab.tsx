@@ -7,19 +7,43 @@ import style from "./App.module.css";
 import type { Track } from "./types/track";
 import { formatMMSS, formatHHMMSS } from "./utils/time";
 
-export default function CreateTab() {
+type Props = {
+  title: string;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  descJp: string;
+  setDescJp: React.Dispatch<React.SetStateAction<string>>;
+  descEn: string;
+  setDescEn: React.Dispatch<React.SetStateAction<string>>;
+  hashtags: string;
+  setHashtags: React.Dispatch<React.SetStateAction<string>>;
+  date: string;
+  setDate: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function CreateTab({
+  title,
+  setTitle,
+  descJp,
+  setDescJp,
+  descEn,
+  setDescEn,
+  hashtags,
+  setHashtags,
+  date,
+  setDate,
+}: Props) {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [title, setTitle] = useState("");
-  const [descJp, setDescJp] = useState("");
-  const [descEn, setDescEn] = useState("");
-  const [hashtags, setHashtags] = useState("");
+  // const [title, setTitle] = useState("");
+  // const [descJp, setDescJp] = useState("");
+  // const [descEn, setDescEn] = useState("");
+  // const [hashtags, setHashtags] = useState("");
   const [thumbnailPath, setThumbnailPath] = useState("");
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [backgroundPath, setBackgroundPath] = useState("");
   const [backgroundPreview, setBackgroundPreview] = useState("");
   const [saveDir, setSaveDir] = useState("D:\\youtubeBGMPostReservation");
-  const [date, setDate] = useState("");
+  // const [date, setDate] = useState("");
   const [publishTime, setPublishTime] = useState("22:00");
 
   const handlePickFolder = async () => {

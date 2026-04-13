@@ -15,7 +15,25 @@ type WeeklyPlan = {
   items: WeeklyPlanItem[];
 };
 
-export default function Idea() {
+type TabType = "create" | "schedule" | "idea";
+
+type Props = {
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setDescJp: React.Dispatch<React.SetStateAction<string>>;
+  setDescEn: React.Dispatch<React.SetStateAction<string>>;
+  setHashtags: React.Dispatch<React.SetStateAction<string>>;
+  setActiveTab: React.Dispatch<React.SetStateAction<TabType>>;
+  setDate: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export default function Idea({
+  setTitle,
+  setDescJp,
+  setDescEn,
+  setHashtags,
+  setActiveTab,
+  setDate,
+}: Props) {
   const [jsons, setJsons] = useState<any[]>([]);
   const [jsonDetail, setJsonDetail] = useState<WeeklyPlan | null>(null);
 
@@ -39,8 +57,6 @@ export default function Idea() {
               onClick={() => {
                 setJsonDetail(v);
               }}
-              // key={v.id}
-              // className={styles.row}
             >
               <div className={styles.row}>{v.weekId}</div>
             </div>
@@ -51,9 +67,20 @@ export default function Idea() {
         <div className={styles.cardTitle}>WEEkLY PLANS</div>
         <div>
           {jsonDetail?.items.map((v) => (
-            <div>
-              <div>{v.date}</div>
-              <div>{v.title}</div>
+            <div
+              onClick={() => {
+                setTitle(v.title);
+                setDescJp(v.jpDescription);
+                setDescEn(v.enDescription);
+                setHashtags(v.hashtags);
+                setDate(v.date);
+                setActiveTab("create");
+              }}
+            >
+              <div className={styles.row}>
+                <div>{v.date}</div>
+                <div>{v.title}</div>
+              </div>
             </div>
           ))}
         </div>
