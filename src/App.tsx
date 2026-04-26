@@ -10,7 +10,6 @@ type TabType = "create" | "schedule" | "idea";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>("create");
-  
   const [title, setTitle] = useState("");
   const [descJp, setDescJp] = useState("");
   const [descEn, setDescEn] = useState("");

@@ -11,7 +11,30 @@ type Props = {
   selectedCount: number;
   totalSecTime: string;
   over60min: boolean;
+  setTracks: React.Dispatch<React.SetStateAction<Track[]>>;
 };
+
+type Status = "unchecked" | "ok" | "noise";
+
+function getStatus(fileName: string): Status {
+  if (fileName.includes("__noise")) return "noise";
+  if (fileName.includes("__ok")) return "ok";
+  return "unchecked";
+}
+
+function StatusLabel({ fileName }: { fileName: string }) {
+  const status = getStatus(fileName);
+
+  if (status === "noise") {
+    return <span className={`${styles.badge} ${styles.ng}`}>ノイズあり</span>;
+  }
+
+  if (status === "ok") {
+    return <span className={`${styles.badge} ${styles.ok}`}>ノイズなし</span>;
+  }
+
+  return <span className={`${styles.badge} ${styles.pending}`}>未判定</span>;
+}
 
 export default function Left({
   tracks,
@@ -22,8 +45,14 @@ export default function Left({
   clearAll,
   selectedCount,
   totalSecTime,
-  // over60min,
+  setTracks,
 }: Props) {
+
+  const deleteWavFile = async (path: string) => {
+    await window.api.DeleteWavFile(path);
+    setTracks((prev) => prev.filter((track) => track.fullPath !== path));
+  };
+
   return (
     <section className={styles.card}>
       <div className={styles.cardTitle}>TRACKS</div>
@@ -35,14 +64,25 @@ export default function Left({
 
       <div className={styles.list}>
         {tracks.map((t) => (
-          <label key={t.id} className={styles.row}>
-            <input
-              type="checkbox"
-              checked={selectedIds.has(t.id)}
-              onChange={() => toggle(t.id)}
-            />
-            <span className={styles.trackName}>{t.name}</span>
-            <span className={styles.muted}>{formatMMSS(t.durationSec)}</span>
+          <label key={t.id} className={styles.trackRow}>
+            <div className={styles.trackMain}>
+              <input
+                type="checkbox"
+                checked={selectedIds.has(t.id)}
+                onChange={() => toggle(t.id)}
+              />
+              <span className={styles.trackName}>{t.name}</span>
+              <span className={styles.muted}>{formatMMSS(t.durationSec)}</span>
+            </div>
+            <div className={styles.trackActions}>
+              <StatusLabel fileName={t.fullPath} />
+              <button
+                onClick={() => deleteWavFile(t.fullPath)}
+                className={styles.delete}
+              >
+                削除
+              </button>
+            </div>
           </label>
         ))}
       </div>

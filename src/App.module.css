@@ -95,6 +95,7 @@
   letter-spacing: 1.2px;
   font-weight: 800;
   color: #c9d2e3;
+  min-width: 120px;
 }
 .cardSub {
   margin-top: 6px;
@@ -111,12 +112,6 @@
   overflow: auto;
   font-size: 12px;
 }
-.trackName {
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .row {
   display: flex;
   align-items: center;
@@ -129,6 +124,48 @@
   transition: background 0.15s ease;
   /* width: 100%; */
   min-width: 0;
+  /* flex-direction: column; */
+}
+.trackName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.trackRow {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  padding: 5px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  /* width: 100%; */
+  min-width: 0;
+  flex-direction: column;
+}
+.trackMain {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+.trackActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 3px;
+}
+.trackRow:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 .row:hover {
   background: rgba(255, 255, 255, 0.05);
@@ -266,6 +303,10 @@
 }
 .totalLine {
   margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
 }
 .roopCounter {
   margin-top: 10px;
@@ -279,6 +320,9 @@
   margin-top: 10px;
   font-size: 12px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .pathText {
   margin-top: 8px;
@@ -298,7 +342,8 @@
   padding: 4px;
   display: block;
   /* margin-left: auto; */
-  margin-right: auto;
+  /* margin-right: auto; */
+  margin-left: auto;
 }
 .imgPath {
   white-space: nowrap;
@@ -381,4 +426,54 @@
 .saveFolderBtn {
   height: 60px;
   padding: 2px;
+}
+.delete {
+  margin: 0;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+.noiseCheck {
+  font-size: 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: greenyellow;
+  color: #0f1115;
+  padding: 1px;
+}
+
+.badge {
+  font-size: 9px;
+  padding: 2px 4px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  margin-left: 3px;
+}
+
+/* ノイズなし */
+.ok {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+/* ノイズあり */
+.ng {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+/* 未判定 */
+.pending {
+  background: rgba(255, 255, 255, 0.08);
+  color: #aaa;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.pic {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
 }

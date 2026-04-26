@@ -10,7 +10,7 @@ export default function ScheduleTab() {
 
   useEffect(() => {
     const loadJson = async () => {
-      const dir = "D:\\youtubeBGMPostReservation";
+      const dir = "D:/bgm-factory/project";
 
       const data = await window.api.loadJsonFiles(dir);
       setJsons(data);
@@ -54,7 +54,7 @@ export default function ScheduleTab() {
                         //     item.jsonFilePath === jsonData.jsonFilePath ? jsonData : item
                         //   )
                         // );
-                        const dir = "D:\\youtubeBGMPostReservation";
+                        const dir = "D:/bgm-factory/project";
 
                         const data = await window.api.loadJsonFiles(dir);
                         setJsons(data);

@@ -39,7 +39,7 @@ export default function Idea({
 
   useEffect(() => {
     const loadJson = async () => {
-      const dir = "D:\\youtubebgmContensJsonfile";
+      const dir = "D:/bgm-factory/ideas";
 
       const data = await window.api.loadJsonFiles(dir);
       setJsons(data);

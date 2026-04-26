@@ -34,17 +34,14 @@ export default function CreateTab({
 }: Props) {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  // const [title, setTitle] = useState("");
-  // const [descJp, setDescJp] = useState("");
-  // const [descEn, setDescEn] = useState("");
-  // const [hashtags, setHashtags] = useState("");
   const [thumbnailPath, setThumbnailPath] = useState("");
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [backgroundPath, setBackgroundPath] = useState("");
   const [backgroundPreview, setBackgroundPreview] = useState("");
-  const [saveDir, setSaveDir] = useState("D:\\youtubeBGMPostReservation");
-  // const [date, setDate] = useState("");
+  const [saveDir, setSaveDir] = useState("D:/bgm-factory/project");
   const [publishTime, setPublishTime] = useState("22:00");
+  const [level, setLevel] = useState(3);
+  const [crossFade, setCrossFade] = useState(3);
 
   const handlePickFolder = async () => {
     const result = await window.api.pickFolder();
@@ -83,12 +80,15 @@ export default function CreateTab({
       createdAt: now.toISOString(),
     };
 
-    //wavファイル_テキスト連結処理
-    await window.api.wavFileConcat(meta.bgmDetail, targetDir.dirPath);
-
-    //wavファイル生成処理
-    await window.api.wavFileGenerate(targetDir.dirPath);
-
+    if(!crossFade) {
+      //wavファイル_テキスト連結処理(クロスフェードなしの場合にテキスト処理する)
+      await window.api.wavFileConcat(meta.bgmDetail, targetDir.dirPath, level);
+      //wavファイル生成処理(クロスフェードなし)
+      await window.api.wavFileGenerate(targetDir.dirPath);
+    } else {
+      //wavファイル生成処理(クロスフェードあり)
+      await window.api.wavFileGenerateCrossfade(meta.bgmDetail, targetDir.dirPath, level, crossFade);
+    }
     //mp4ファイル生成処理
     const result = await window.api.mp4FileGenerate(
       targetDir.dirPath,
@@ -190,6 +190,7 @@ export default function CreateTab({
       <div className={style.columns}>
         {/* Left */}
         <Left
+          setTracks={setTracks}
           tracks={tracks}
           selectedIds={selectedIds}
           toggle={toggle}
@@ -217,6 +218,10 @@ export default function CreateTab({
               setBackgroundPath={setBackgroundPath}
               backgroundPreview={backgroundPreview}
               setBackgroundPreview={setBackgroundPreview}
+              level={level}
+              setLevel={setLevel}
+              crossFead={crossFade}
+              setCrossFead={setCrossFade}
             />
 
             {/* Right */}
