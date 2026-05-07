@@ -1,0 +1,438 @@
+
+.columns {
+  display: grid;
+  grid-template-columns: 250px 646px;
+  gap: 16px;
+  align-items: start;
+  width: 100%;
+  min-width: 0px;
+}
+
+.card {
+  border-radius: 5px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 880px;
+}
+.rightCard {
+  border-radius: 5px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 831px;
+  margin-left: 16px;
+}
+.cardWide {
+  border-radius: 5px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  min-height: 520px;
+  height: 831px;
+  box-sizing: border-box;
+  width: 250px;
+}
+.cardTitle {
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  font-weight: 800;
+  color: #c9d2e3;
+  min-width: 120px;
+}
+.cardSub {
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: #a8b0c0;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  flex: 1;
+  max-height: 740px;
+  overflow: auto;
+  font-size: 12px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  /* width: 100%; */
+  min-width: 0;
+  /* flex-direction: column; */
+}
+.trackName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.trackRow {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  padding: 5px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  /* width: 100%; */
+  min-width: 0;
+  flex-direction: column;
+}
+.trackMain {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+.trackActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 3px;
+}
+.trackRow:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.muted {
+  color: #9aa6bd;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+.actionsCol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+}
+.btn {
+  border-radius: 5px;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #edeff4;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btnGhost {
+  border-radius: 5px;
+  padding: 5px 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #edeff4;
+  cursor: pointer;
+}
+.btnPrimary {
+  border-radius: 12px;
+  padding: 5px 7px;
+  background: rgba(245, 178, 122, 0.22);
+  border: 1px solid rgba(245, 178, 122, 0.32);
+  color: #f8ede3;
+  cursor: pointer;
+  font-weight: 700;
+}
+.buildBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: auto;
+  font-size: 12px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-top: 10px;
+  height: 290px;
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 10px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.buildRow {
+  display: flex;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.total-line {
+  margin-top: 12px;
+  color: #c9d2e3;
+}
+.badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid transparent;
+}
+.badgeOk {
+  background: rgba(59, 201, 123, 0.18);
+  border-color: rgba(59, 201, 123, 0.28);
+}
+.badgeNg {
+  background: rgba(255, 107, 107, 0.16);
+  border-color: rgba(255, 107, 107, 0.28);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  /* align-items: center; */
+}
+.label {
+  font-size: 12px;
+  color: #a8b0c0;
+}
+.input {
+  border-radius: 5px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #edeff4;
+  outline: none;
+  /* height: 50px; */
+}
+.hashtagsInput {
+  border-radius: 5px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #edeff4;
+  outline: none;
+  height: 50px;
+}
+.textarea {
+  border-radius: 5px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #edeff4;
+  outline: none;
+  min-height: 130px;
+  resize: vertical;
+}
+.totalLine {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+.roopCounter {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.roopSelectNum {
+  display: flex;
+  gap: 10px;
+}
+.thumbnailPic {
+  margin-top: 10px;
+  font-size: 12px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pathText {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #a8b0c0;
+  word-break: break-all;
+}
+.previewImage {
+  margin-top: 8px;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.picButton {
+  padding: 4px;
+  display: block;
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+  margin-left: auto;
+}
+.imgPath {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.imgSize {
+  width: 220px;
+  height: 120px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.buildMetadataSection {
+  display: flex;
+}
+.buildMetadataGenerateSection {
+  width: 100%;
+}
+.generateSection {
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px;
+  height: 40px;
+  margin-top: 5px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.actionButtons {
+  margin-top: 3px;
+
+  transform: translateY(9px);
+
+}
+.generateBtn {
+  padding: 3px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  border-radius: 5px;
+  margin-top: 6px;
+  background: rgba(245, 178, 122, 0.18);
+  cursor: pointer;
+  height: 30px;
+  text-align: center;
+  color: white;
+}
+.generateBtn:hover {
+  background: rgba(245, 178, 122, 0.28);
+  border-color: rgba(245, 178, 122, 0.5);
+}
+.folderSelectBtn {
+  font-size: 8px;
+  margin-right: 10px;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* transform: translateY(2px); */
+  padding: 2px;
+  border-radius: 2px;
+  height: 20px;
+}
+.rightTitle {
+  display: flex;
+  justify-content: space-between;
+}
+.saveFolder {
+  font-size: 10px;
+}
+.saveFolderBtn {
+  height: 60px;
+  padding: 2px;
+}
+.delete {
+  margin: 0;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+.noiseCheck {
+  font-size: 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: greenyellow;
+  color: #0f1115;
+  padding: 1px;
+}
+
+.badge {
+  font-size: 9px;
+  padding: 2px 4px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  margin-left: 3px;
+}
+
+/* ノイズなし */
+.ok {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+/* ノイズあり */
+.ng {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+/* 未判定 */
+.pending {
+  background: rgba(255, 255, 255, 0.08);
+  color: #aaa;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.pic {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}

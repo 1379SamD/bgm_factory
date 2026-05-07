@@ -1,6 +1,5 @@
-import styles from "./App.module.css";
-import type { Track } from "./types/track.ts";
-// import { useState } from "react";
+import styles from "./CreateTab.module.css";
+import type { Track } from "../../types/track.ts";
 
 type Props = {
   selectedTracks: Track[];
@@ -8,13 +7,10 @@ type Props = {
   formatHHMMSS: (totalSec: number) => string;
   totalSec: number;
   over60min: boolean;
-  // imagePath: string;
   pickImage: (
     setPath: (v: string) => void,
     setPreview: (v: string) => void,
   ) => void;
-  // imageSrc: string;
-  // previewUrl: string;
 
   setThumbnailPath: (v: string) => void;
   setThumbnailPreview: (v: string) => void;
@@ -45,17 +41,12 @@ export default function Center({
   crossFead,
   setCrossFead,
 }: Props) {
-  // const [level, setLevel] = useState(3);
-  // const [crossFead, setCrossFead] = useState(3);
   let sumIncludingLoops = totalSec * level;
   let loopsOver60min = sumIncludingLoops >= 60 * 60;
 
   return (
     <section className={styles.cardWide}>
       <div className={styles.cardTitle}>BUILD</div>
-      {/* <div className={styles.cardSub}>
-        選択した曲をまとめる（v1ではフォルダ作成は後でIPC）
-      </div> */}
 
       <div className={styles.buildBox}>
         {selectedTracks.length === 0 ? (

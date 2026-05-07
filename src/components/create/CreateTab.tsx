@@ -2,10 +2,10 @@ import { useMemo, useState, useEffect } from "react";
 import Left from "./Left";
 import Center from "./Center";
 import Right from "./Right";
-import style from "./App.module.css";
+import style from "./CreateTab.module.css";
 
-import type { Track } from "./types/track";
-import { formatMMSS, formatHHMMSS } from "./utils/time";
+import type { Track } from "../../types/track";
+import { formatMMSS, formatHHMMSS } from "../../utils/time";
 
 type Props = {
   title: string;
@@ -18,7 +18,7 @@ type Props = {
   setHashtags: React.Dispatch<React.SetStateAction<string>>;
   date: string;
   setDate: React.Dispatch<React.SetStateAction<string>>;
-}
+};
 
 export default function CreateTab({
   title,
@@ -38,7 +38,7 @@ export default function CreateTab({
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [backgroundPath, setBackgroundPath] = useState("");
   const [backgroundPreview, setBackgroundPreview] = useState("");
-  const [saveDir, setSaveDir] = useState("D:/bgm-factory/project");
+  const [saveDir, setSaveDir] = useState(import.meta.env.VITE_PROJECT_FOLDER_PATH);
   const [publishTime, setPublishTime] = useState("22:00");
   const [level, setLevel] = useState(3);
   const [crossFade, setCrossFade] = useState(3);
@@ -80,14 +80,19 @@ export default function CreateTab({
       createdAt: now.toISOString(),
     };
 
-    if(!crossFade) {
+    if (!crossFade) {
       //wavファイル_テキスト連結処理(クロスフェードなしの場合にテキスト処理する)
       await window.api.wavFileConcat(meta.bgmDetail, targetDir.dirPath, level);
       //wavファイル生成処理(クロスフェードなし)
       await window.api.wavFileGenerate(targetDir.dirPath);
     } else {
       //wavファイル生成処理(クロスフェードあり)
-      await window.api.wavFileGenerateCrossfade(meta.bgmDetail, targetDir.dirPath, level, crossFade);
+      await window.api.wavFileGenerateCrossfade(
+        meta.bgmDetail,
+        targetDir.dirPath,
+        level,
+        crossFade,
+      );
     }
     //mp4ファイル生成処理
     const result = await window.api.mp4FileGenerate(
@@ -105,21 +110,21 @@ export default function CreateTab({
       try {
         console.log("window.api", (window as any).api);
 
-        if (!window.api?.loadFixedMp3) {
+        if (!window.api?.loadFixedWav) {
           console.error("window.api is undefined (preload not loaded)");
           return;
         }
-        const res = await window.api.loadFixedMp3();
-        console.log("loadFixedMp3 res:", res);
+        const res = await window.api.loadFixedWav();
+        console.log("loadFixedWav res:", res);
 
         if (res.ok) {
           setTracks(res.files);
         } else {
           console.error(res.error);
-          alert(`MP3読み込み失敗: ${res.error ?? "unknown"}`);
+          alert(`WAVファイル読み込み失敗: ${res.error ?? "unknown"}`);
         }
       } catch (e) {
-        console.error("loadFixedMp3 threw:", e);
+        console.error("loadFixedWav threw:", e);
         alert(`例外: ${String(e)}`);
       }
     };
@@ -202,8 +207,8 @@ export default function CreateTab({
           over60min={over60min}
         />
 
-        <section className={style.test}>
-          <div className={style.test1}>
+        <section className={style.buildMetadataGenerateSection}>
+          <div className={style.buildMetadataSection}>
             {/* Center */}
             <Center
               selectedTracks={selectedTracks}
@@ -242,12 +247,9 @@ export default function CreateTab({
               publishTime={publishTime}
             />
           </div>
-          <div className={style.test2}>
-            <p className={style.saveFolder}>
-              {saveDir}
-              {/* {formatDate(`${date}`)} */}
-            </p>
-            <div className={style.test3}>
+          <div className={style.generateSection}>
+            <p className={style.saveFolder}>{saveDir}</p>
+            <div className={style.actionButtons}>
               <div className={style.saveFolderBtn}>
                 <button
                   className={style.folderSelectBtn}

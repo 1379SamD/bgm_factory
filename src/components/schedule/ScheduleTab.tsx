@@ -1,6 +1,6 @@
 import styles from "./ScheduleTab.module.css";
 import { useState, useEffect } from "react";
-import type { VideoMeta } from "./types/videoMeta";
+import type { VideoMeta } from "../../types/videoMeta";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
@@ -10,7 +10,7 @@ export default function ScheduleTab() {
 
   useEffect(() => {
     const loadJson = async () => {
-      const dir = "D:/bgm-factory/project";
+      const dir = import.meta.env.VITE_PROJECT_FOLDER_PATH;
 
       const data = await window.api.loadJsonFiles(dir);
       setJsons(data);
@@ -48,13 +48,7 @@ export default function ScheduleTab() {
 
                       try {
                         await window.api.ScheduleOnePost(v);
-                        // const jsonData = await window.api.ScheduleOnePost(v);
-                        // setJsons((prev) =>
-                        //   prev.map((item) =>
-                        //     item.jsonFilePath === jsonData.jsonFilePath ? jsonData : item
-                        //   )
-                        // );
-                        const dir = "D:/bgm-factory/project";
+                        const dir = import.meta.env.VITE_PROJECT_FOLDER_PATH;
 
                         const data = await window.api.loadJsonFiles(dir);
                         setJsons(data);

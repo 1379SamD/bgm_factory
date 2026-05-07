@@ -1,0 +1,1 @@
+export type Status = "unchecked" | "ok" | "noise" | "tempoNG" | "unstable";

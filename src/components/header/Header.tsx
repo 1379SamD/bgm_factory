@@ -1,6 +1,6 @@
-import styles from "./App.module.css";
+import styles from "./Header.module.css";
+import { TabType } from "../../types/tabType";
 
-type TabType = "create" | "schedule" | "idea";
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<TabType>>;
 };

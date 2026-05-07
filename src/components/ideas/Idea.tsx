@@ -1,21 +1,7 @@
 import styles from "./IdeaTab.module.css";
-
 import { useState, useEffect } from "react";
-
-type WeeklyPlanItem = {
-  date: string;
-  title: string;
-  jpDescription: string;
-  enDescription: string;
-  hashtags: string;
-};
-
-type WeeklyPlan = {
-  weekId: string;
-  items: WeeklyPlanItem[];
-};
-
-type TabType = "create" | "schedule" | "idea";
+import type { TabType } from "../../types/tabType";
+import type { WeeklyPlan } from "../../types/weeklyPlan";
 
 type Props = {
   setTitle: React.Dispatch<React.SetStateAction<string>>;
@@ -39,7 +25,7 @@ export default function Idea({
 
   useEffect(() => {
     const loadJson = async () => {
-      const dir = "D:/bgm-factory/ideas";
+      const dir = import.meta.env.VITE_IDEAS_FOLDER_PATH;
 
       const data = await window.api.loadJsonFiles(dir);
       setJsons(data);

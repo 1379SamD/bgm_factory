@@ -1,3 +1,4 @@
+import { VideoMeta } from './../src/types/videoMeta';
 /// <reference types="vite-plugin-electron/electron-env" />
 
 declare namespace NodeJS {
@@ -21,21 +22,12 @@ declare namespace NodeJS {
   }
 }
 
-// Used in Renderer process, expose in `preload.ts`
-// interface Window {
-//   ipcRenderer: import('electron').IpcRenderer
-//   api: {
-//     loadFixedMp3: () => Promise<any>;
-
-//   };
-// }
-
 export {}
 
 declare global {
   interface Window {
     api: {
-      loadFixedMp3: () => Promise<{
+      loadFixedWav: () => Promise<{
         ok: boolean
         error?: string
         folder: string
@@ -59,7 +51,7 @@ declare global {
         meta: any,
       ) => void;
       wavFileConcat: (
-        bgmDetail: any[], outputDir: string
+        bgmDetail: any[], outputDir: string, level: number
       ) => string;
       wavFileGenerate: (
         wavFilePath: string,
@@ -73,7 +65,13 @@ declare global {
       ) => any[];
       ScheduleOnePost: (
         jsonMetaData: VideoMeta
-      ) => void
+      ) => void;
+      DeleteWavFile: (
+        wavFilePath: string,
+      ) => void;
+      wavFileGenerateCrossfade: (
+        bgmDetail: any[], outputDir: string, level: number, crossFade: number
+      ) => string;
     };
   }
 }

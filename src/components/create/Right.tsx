@@ -1,7 +1,4 @@
-import styles from "./App.module.css";
-// import { useState } from "react";
-
-
+import styles from "./CreateTab.module.css";
 
 type Props = {
   title: string;
@@ -36,7 +33,6 @@ export default function Right({
   setPublishTime,
   publishTime,
 }: Props) {
-  // const [publishTime, setPublishTime] = useState("22:00");
 
   const metaDataCheck = (): boolean => {
     if (title === "" || descJp === "" || descEn === "" || hashtags === "") {

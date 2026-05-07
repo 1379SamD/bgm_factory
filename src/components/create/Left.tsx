@@ -1,5 +1,6 @@
-import styles from "./App.module.css";
-import type { Track } from "./types/track";
+import styles from "./CreateTab.module.css";
+import type { Track } from "../../types/track";
+import type { Status } from "../../types/status";
 
 type Props = {
   tracks: Track[];
@@ -14,15 +15,15 @@ type Props = {
   setTracks: React.Dispatch<React.SetStateAction<Track[]>>;
 };
 
-type Status = "unchecked" | "ok" | "noise";
-
 function getStatus(fileName: string): Status {
   if (fileName.includes("__noise")) return "noise";
+  if (fileName.includes("__ok__tempoNG.wav")) return "tempoNG";
+  if (fileName.includes("__ok__unstable")) return "unstable";
   if (fileName.includes("__ok")) return "ok";
   return "unchecked";
 }
 
-function StatusLabel({ fileName }: { fileName: string }) {
+function StatusNoiseLabel({ fileName }: { fileName: string }) {
   const status = getStatus(fileName);
 
   if (status === "noise") {
@@ -32,8 +33,37 @@ function StatusLabel({ fileName }: { fileName: string }) {
   if (status === "ok") {
     return <span className={`${styles.badge} ${styles.ok}`}>ノイズなし</span>;
   }
+  if (status === "tempoNG") {
+    return <span className={`${styles.badge} ${styles.ok}`}>ノイズなし</span>;
+  }
+  if (status === "unstable") {
+    return <span className={`${styles.badge} ${styles.ok}`}>ノイズなし</span>;
+  }
+  return (
+    <span className={`${styles.badge} ${styles.pending}`}>ノイズ未判定</span>
+  );
+}
 
-  return <span className={`${styles.badge} ${styles.pending}`}>未判定</span>;
+function StatusTempoLabel({ fileName }: { fileName: string }) {
+  const status = getStatus(fileName);
+
+  if (status === "tempoNG") {
+    return <span className={`${styles.badge} ${styles.ng}`}>テンポ早い</span>;
+  }
+
+  if (status === "unstable") {
+    return (
+      <span className={`${styles.badge} ${styles.ng}`}>テンポバラつき</span>
+    );
+  }
+
+  if (status === "ok") {
+    return <span className={`${styles.badge} ${styles.ok}`}>テンポ普通</span>;
+  }
+
+  return (
+    <span className={`${styles.badge} ${styles.pending}`}>テンポ未判定</span>
+  );
 }
 
 export default function Left({
@@ -47,7 +77,6 @@ export default function Left({
   totalSecTime,
   setTracks,
 }: Props) {
-
   const deleteWavFile = async (path: string) => {
     await window.api.DeleteWavFile(path);
     setTracks((prev) => prev.filter((track) => track.fullPath !== path));
@@ -75,7 +104,10 @@ export default function Left({
               <span className={styles.muted}>{formatMMSS(t.durationSec)}</span>
             </div>
             <div className={styles.trackActions}>
-              <StatusLabel fileName={t.fullPath} />
+              <div>
+                <StatusNoiseLabel fileName={t.fullPath} />
+                <StatusTempoLabel fileName={t.fullPath} />
+              </div>
               <button
                 onClick={() => deleteWavFile(t.fullPath)}
                 className={styles.delete}

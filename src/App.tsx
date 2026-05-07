@@ -1,12 +1,10 @@
 import { useState } from "react";
 import styles from "./App.module.css";
-import CreateTab from "./CreateTab";
-import Header from "./Header";
-import ScheduleTab from "./ScheduleTab";
-import Idea from "./Idea";
-
-type TabType = "create" | "schedule" | "idea";
-
+import CreateTab from "./components/create/CreateTab";
+import Header from "./components/header/Header";
+import ScheduleTab from "./components/schedule/ScheduleTab";
+import Idea from "./components/ideas/Idea";
+import type { TabType } from "./types/tabType";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>("create");
@@ -20,28 +18,30 @@ export default function App() {
     <div className={styles.app}>
       <Header setActiveTab={setActiveTab} />
       <main>
-        {activeTab === "idea" && <Idea
-          setTitle={setTitle}
-          setDescJp={setDescJp}
-          setDescEn={setDescEn}
-          setHashtags={setHashtags}
-          setActiveTab={setActiveTab}
-          setDate={setDate}
-        />
-        }
-        {activeTab === "create" && <CreateTab
-          title={title}
-          setTitle={setTitle}
-          descJp={descJp}
-          setDescJp={setDescJp}
-          descEn={descEn}
-          setDescEn={setDescEn}
-          hashtags={hashtags}
-          setHashtags={setHashtags}
-          date={date}
-          setDate={setDate}
-        />
-        }
+        {activeTab === "idea" && (
+          <Idea
+            setTitle={setTitle}
+            setDescJp={setDescJp}
+            setDescEn={setDescEn}
+            setHashtags={setHashtags}
+            setActiveTab={setActiveTab}
+            setDate={setDate}
+          />
+        )}
+        {activeTab === "create" && (
+          <CreateTab
+            title={title}
+            setTitle={setTitle}
+            descJp={descJp}
+            setDescJp={setDescJp}
+            descEn={descEn}
+            setDescEn={setDescEn}
+            hashtags={hashtags}
+            setHashtags={setHashtags}
+            date={date}
+            setDate={setDate}
+          />
+        )}
         {activeTab === "schedule" && <ScheduleTab />}
       </main>
     </div>
