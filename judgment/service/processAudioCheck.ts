@@ -1,6 +1,7 @@
 import { processNoiseCheck } from "../noise-watcher/noiseProcessor.js";
 import { analyzeOnsetDensity } from "../tempo_watcher/analyzeOnsetDensity.js";
 import { processSlidingNoiseCheck } from "../SlidingNoiseCheck/analyzeHighBandSection.js";
+// import { processFastNoiseCheck } from "../fastNoiseCheck/processFastNoiseCheck.js";
 import fs from "fs";
 
 export async function processAudioCheck(filePath: string) {
@@ -21,15 +22,22 @@ export async function processAudioCheck(filePath: string) {
     variation: noiseResult.variation,
   });
 
-  if (isNoise) {
-    const newPath = filePath.replace(".wav", "__noise.wav");
+  // const fastNoiseResult = await processFastNoiseCheck(filePath);
 
-    await new Promise((r) => setTimeout(r, 200));
+  // const isNoise = fastNoiseResult.isNoise;
 
-    fs.renameSync(filePath, newPath);
+  // console.log("ノイズ:", fastNoiseResult);
+  // console.log("最終判定:", isNoise);
 
-    return;
-  }
+  // if (isNoise) {
+  //   const newPath = filePath.replace(/\.wav$/i, "__noise.wav");
+
+  //   await new Promise((r) => setTimeout(r, 200));
+
+  //   fs.renameSync(filePath, newPath);
+
+  //   return;
+  // }
 
   const tempoResult = await analyzeOnsetDensity(filePath);
 
